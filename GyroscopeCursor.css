@@ -3,6 +3,26 @@
    Direction-aware pointer arrow with dynamic turning, dip ripple, and badges
    ========================================================================== */
 
+/* Hide default OS cursor only on devices with a mouse/trackpad when Gyroscope is active */
+@media (pointer: fine) {
+  html.has-gyro-cursor,
+  html.has-gyro-cursor *,
+  body.has-gyro-cursor,
+  body.has-gyro-cursor * {
+    cursor: none !important;
+  }
+
+  /* Preserve native caret on text inputs and editable fields */
+  html.has-gyro-cursor input,
+  html.has-gyro-cursor textarea,
+  html.has-gyro-cursor select,
+  html.has-gyro-cursor [contenteditable="true"],
+  html.has-gyro-cursor [data-cursor="native"],
+  html.has-gyro-cursor [data-cursor="native"] * {
+    cursor: auto !important;
+  }
+}
+
 .gyroscope-cursor-pointer {
   position: fixed;
   top: 0;
@@ -122,3 +142,4 @@
     display: none !important;
   }
 }
+

@@ -37,8 +37,8 @@ const GyroscopeCursor = forwardRef(function GyroscopeCursor(
   // Motion state
   const pos = useRef({ x: -100, y: -100 });
   const target = useRef({ x: -100, y: -100 });
-  const angle = useRef(-Math.PI / 4); // Default -45 deg (top-left)
-  const targetAngle = useRef(-Math.PI / 4);
+  const angle = useRef(-3 * Math.PI / 4); // Default resting angle: -135 deg (pointing up-left ↖)
+  const targetAngle = useRef(-3 * Math.PI / 4);
   const speed = useRef(0);
   const isMoving = useRef(false);
   const isDown = useRef(false);
@@ -103,6 +103,8 @@ const GyroscopeCursor = forwardRef(function GyroscopeCursor(
     // Disable on touch devices
     if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) return;
 
+    document.documentElement.classList.add('has-gyro-cursor');
+
     const handlePointerMove = (e) => {
       target.current.x = e.clientX;
       target.current.y = e.clientY;
@@ -166,8 +168,8 @@ const GyroscopeCursor = forwardRef(function GyroscopeCursor(
         const now = performance.now();
         if (now - lastMoveTime.current > 160) {
           isMoving.current = false;
-          // Rest gently toward standard pointer orientation (-45deg)
-          targetAngle.current = -Math.PI / 4;
+          // Rest gently toward standard pointer orientation (-135deg = ↖ up-left)
+          targetAngle.current = -3 * Math.PI / 4;
         }
       }
 
@@ -195,6 +197,7 @@ const GyroscopeCursor = forwardRef(function GyroscopeCursor(
     rafId = requestAnimationFrame(render);
 
     return () => {
+      document.documentElement.classList.remove('has-gyro-cursor');
       cancelAnimationFrame(rafId);
       window.removeEventListener('pointermove', handlePointerMove);
       window.removeEventListener('pointerdown', handlePointerDown);
@@ -251,3 +254,4 @@ const GyroscopeCursor = forwardRef(function GyroscopeCursor(
 });
 
 export default GyroscopeCursor;
+

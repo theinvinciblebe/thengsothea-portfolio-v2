@@ -57,13 +57,16 @@
     }
     applyColors();
 
+    // Hide default OS cursor via html.has-gyro-cursor
+    document.documentElement.classList.add('has-gyro-cursor');
+
     // Motion Physics
     let posX = -100;
     let posY = -100;
     let targetX = -100;
     let targetY = -100;
-    let angle = -Math.PI / 4; // Default resting angle: -45 deg
-    let targetAngle = -Math.PI / 4;
+    let angle = -3 * Math.PI / 4; // Default resting angle: -135 deg (pointing up-left ↖)
+    let targetAngle = -3 * Math.PI / 4;
     let isDown = false;
     let isVisible = false;
     let isNative = false;
@@ -156,8 +159,8 @@
       } else {
         const now = performance.now();
         if (now - lastMoveTime > 180) {
-          // Settle gracefully back toward standard pointer angle (-45 deg)
-          targetAngle = -Math.PI / 4;
+          // Settle gracefully back toward standard pointer angle (-135 deg = ↖ up-left)
+          targetAngle = -3 * Math.PI / 4;
         }
       }
 
@@ -221,6 +224,7 @@
       },
       destroy: function () {
         disposed = true;
+        document.documentElement.classList.remove('has-gyro-cursor');
         cancelAnimationFrame(rafId);
         window.removeEventListener('pointermove', onPointerMove);
         window.removeEventListener('pointerdown', onPointerDown);
@@ -242,3 +246,4 @@
     module.exports = { initGyroscopeCursor };
   }
 })(typeof window !== 'undefined' ? window : this);
+
