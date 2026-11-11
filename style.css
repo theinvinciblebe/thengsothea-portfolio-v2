@@ -3242,3 +3242,127 @@ i[class^="devicon-"] {
     padding: 0.35rem 0.55rem;
   }
 }
+/* ==========================================================================
+   REACT BITS PRO — GYROSCOPE CURSOR STYLESHEET
+   Direction-aware pointer arrow with dynamic turning, dip ripple, and badges
+   ========================================================================== */
+
+.gyroscope-cursor-pointer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100000;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform, opacity;
+  transform: translate3d(-100px, -100px, 0);
+  opacity: 0;
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gyroscope-cursor-arrow-wrap {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  margin-top: -12px;
+  margin-left: -12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center center;
+  filter: drop-shadow(0 2px 10px var(--gyro-glow, rgba(6, 182, 212, 0.45)));
+  transition: transform 0.06s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+
+.gyroscope-cursor-arrow {
+  display: block;
+  overflow: visible;
+  transition: transform 0.15s ease;
+}
+
+/* Click Dip Animation */
+.cursor-dipping .gyroscope-cursor-arrow-wrap {
+  transform: scale(0.82) !important;
+}
+
+/* Click Ripple Wave */
+.gyroscope-cursor-ripple {
+  position: absolute;
+  top: -16px;
+  left: -16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--gyro-color, #06b6d4);
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.3);
+  box-sizing: border-box;
+}
+
+.gyroscope-cursor-ripple.ripple-active {
+  animation: gyroRipple 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes gyroRipple {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.4);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.2);
+  }
+}
+
+/* Wiggle Animation */
+.cursor-wiggling {
+  animation: gyroWiggle 0.45s ease-in-out;
+}
+
+@keyframes gyroWiggle {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(-18deg); }
+  40% { transform: rotate(18deg); }
+  60% { transform: rotate(-10deg); }
+  80% { transform: rotate(10deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Floating Label Badge */
+.gyroscope-cursor-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--gyro-badge-text, #07080c);
+  background: var(--gyro-color, #06b6d4);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 9999px;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  animation: gyroBadgePop 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes gyroBadgePop {
+  0% {
+    opacity: 0;
+    transform: scale(0.7) translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Touch & Mobile Fallback */
+@media (pointer: coarse) {
+  .gyroscope-cursor-pointer {
+    display: none !important;
+  }
+}

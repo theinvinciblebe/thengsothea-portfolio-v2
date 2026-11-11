@@ -48,6 +48,7 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="Lanyard.css" />
   <link rel="stylesheet" href="Topography.css" />
+  <link rel="stylesheet" href="GyroscopeCursor.css" />
 
   <!-- Import map for Three.js module environments -->
   <script type="importmap">
@@ -93,7 +94,7 @@
 
       <!-- Enter Button -->
       <div class="welcome-action-wrap animate-fade-slide-up delay-2">
-        <button id="btn-enter-portfolio" class="btn-enter" aria-label="Enter Portfolio Website">
+        <button id="btn-enter-portfolio" class="btn-enter" aria-label="Enter Portfolio Website" data-cursor-label="Enter">
           <span data-i18n="welcome.enter">Enter Portfolio</span>
           <i class="fa-solid fa-arrow-right-long"></i>
         </button>
@@ -262,11 +263,11 @@
 
           <!-- Action Buttons -->
           <div class="hero-cta-group">
-            <button id="btn-open-cv" class="btn btn-primary" aria-label="View Curriculum Vitae">
+            <button id="btn-open-cv" class="btn btn-primary" aria-label="View Curriculum Vitae" data-cursor-label="View CV">
               <i class="fa-solid fa-file-invoice"></i>
               <span data-i18n="hero.viewCv">View CV</span>
             </button>
-            <a href="#contact" class="btn btn-outline" aria-label="Contact Theng Sothea">
+            <a href="#contact" class="btn btn-outline" aria-label="Contact Theng Sothea" data-cursor-label="Contact">
               <i class="fa-regular fa-paper-plane"></i>
               <span data-i18n="hero.contactMe">Contact Me</span>
             </a>
@@ -410,7 +411,7 @@
           <div class="about-image-column reveal-on-scroll">
             <div class="lanyard-wrapper">
               <div class="lanyard-backdrop-glow"></div>
-              <div id="lanyard-container" class="lanyard-container"></div>
+              <div id="lanyard-container" class="lanyard-container" data-cursor-label="Drag &amp; Flip"></div>
               <div class="lanyard-hint">
                 <i class="fa-solid fa-hand-pointer"></i>
                 <span data-i18n="about.lanyardHint">Drag or click to flip</span>
@@ -1405,6 +1406,8 @@
 
   <!-- Topography 3D Simulation (React Bits) -->
   <script src="topography.js"></script>
+  <!-- Gyroscope Cursor (React Bits Pro) -->
+  <script src="gyroscope-cursor.js"></script>
   <!-- Three.js (required by Lanyard) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
   <script src="assets/sothea_pf_data.js"></script>

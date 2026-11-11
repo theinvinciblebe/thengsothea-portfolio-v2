@@ -434,6 +434,22 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
+     2b. GYROSCOPE CURSOR (REACT BITS PRO)
+     An arrow cursor that dynamically turns toward where it moves
+     ========================================================================== */
+  if (typeof initGyroscopeCursor === 'function') {
+    const isPageCyan = window.location.pathname.includes('template-cyan') || (document.documentElement.getAttribute('data-template') === 'cyan' && !window.location.pathname.includes('template-forest'));
+    const curTemplate = isPageCyan ? 'cyan' : (localStorage.getItem('sothea_portfolio_template') || document.documentElement.getAttribute('data-template') || 'forest');
+    const isCyan = curTemplate === 'cyan';
+
+    window.gyroCursorInstance = initGyroscopeCursor({
+      color: isCyan ? '#06b6d4' : '#fffbda',
+      glow: isCyan ? 'rgba(6, 182, 212, 0.45)' : 'rgba(0, 55, 28, 0.65)',
+      badgeText: isCyan ? '#07080c' : '#00371c'
+    });
+  }
+
+  /* ==========================================================================
      3. NAVBAR SCROLL EFFECT & SCROLL SPY
      ========================================================================== */
   const navbar = document.getElementById('navbar');
@@ -596,6 +612,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const isCyan = validTemplate === 'cyan';
       window.topographyInstance.update({
         color: isCyan ? '#06b6d4' : '#fffbda'
+      });
+    }
+
+    // Update Gyroscope Cursor if initialized
+    if (window.gyroCursorInstance && typeof window.gyroCursorInstance.update === 'function') {
+      const isCyan = validTemplate === 'cyan';
+      window.gyroCursorInstance.update({
+        color: isCyan ? '#06b6d4' : '#fffbda',
+        glow: isCyan ? 'rgba(6, 182, 212, 0.45)' : 'rgba(0, 55, 28, 0.65)',
+        badgeText: isCyan ? '#07080c' : '#00371c'
       });
     }
   };
