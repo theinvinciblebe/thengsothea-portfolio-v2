@@ -1,6 +1,6 @@
 # Theng Sothea — Personal Web Developer Portfolio
 
-An ultra-modern, high-performance portfolio website for **Theng Sothea** ([t-sothea-portfolio.vercel.app](https://t-sothea-portfolio.vercel.app/)), crafted with semantic HTML5, modern vanilla CSS, and an interactive vanilla JavaScript engine.
+An ultra-modern, high-performance portfolio website for **Theng Sothea** ([t-sothea-portfolio.vercel.app](https://thengsothea-portfolio-v2.vercel.app/)), crafted with semantic HTML5, modern vanilla CSS, and an interactive vanilla JavaScript engine.
 
 ---
 
