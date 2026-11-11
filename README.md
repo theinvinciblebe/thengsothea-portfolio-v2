@@ -89,24 +89,21 @@ An ultra-modern, high-performance portfolio website for **Theng Sothea** ([t-sot
 ## 📁 Project Structure
 
 ```text
-monyphy-portfolio/
-├── index.html        # Semantic HTML5 markup with complete SEO & OpenGraph meta tags
-├── style.css         # Modern vanilla CSS with design tokens, glassmorphism, animations
-├── script.js         # Vanilla JS engine (i18n EN/KM, typewriter, theme toggle, filters, modal)
-├── assets/           # Real assets (Sothea portrait, Angkor Wat, CV PDF, project screenshots, flags)
-│   ├── sothea_pf.png
-│   ├── THENG-SOTHEA_CV.pdf
-│   ├── business_cambodia_screen.png
-│   ├── portfolio-SMS.jpg
-│   ├── cms_gaming.png
-│   ├── bookstore_pos.jpg
-│   ├── ecommerce_django.jpg
-│   ├── depreciation.jpg
-│   ├── angkor_wat_bg-cqZnAI3n.png
-│   └── flags/
-│       ├── gb.svg
-│       └── kh.svg
-└── README.md         # Documentation
+thengsothea-portfolio-v2/
+├── index.html            # Main portfolio with interactive template switcher
+├── template-forest.html  # Standalone Edition 1: Forest & Cream (#00371c & #fffbda)
+├── template-cyan.html    # Standalone Edition 2: Cyber Cyan (#06b6d4 & #22d3ee)
+├── style.css             # Design tokens for dual templates across dark & light themes
+├── script.js             # Core controller (templates, i18n EN/KM, theme transitions, filters)
+├── Topography.jsx        # React Bits Topography 3D Component source
+├── Topography.css        # Topography stylesheet
+├── topography.js         # Pure WebGL 2 Topography engine for welcome screen background
+├── Lanyard.jsx           # React Bits Lanyard 3D Component source
+├── Lanyard.css           # Lanyard stylesheet
+├── lanyard.js            # Three.js 3D interactive physics lanyard badge engine
+├── lanyard.esm.js        # ES Module adapter
+├── assets/               # Portrait, CV PDF, project screenshots, flag SVGs
+└── README.md             # Documentation
 ```
 
 ---
