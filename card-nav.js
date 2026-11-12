@@ -64,25 +64,25 @@
     },
     // Template 1: Forest & Cream Presets
     'forest-dark': {
-      '--cn-panel': 'rgba(2, 28, 15, 0.82)',
-      '--cn-solid': '#002513',
-      '--cn-edge': 'rgba(255, 251, 218, 0.12)',
-      '--cn-highlight': 'rgba(255, 251, 218, 0.08)',
+      '--cn-panel': 'rgba(0, 55, 28, 0.88)',
+      '--cn-solid': '#00371c',
+      '--cn-edge': 'rgba(255, 251, 218, 0.14)',
+      '--cn-highlight': 'rgba(255, 251, 218, 0.1)',
       '--cn-shadow': '0 24px 48px -20px rgba(0, 20, 10, 0.85), 0 6px 16px -8px rgba(0, 0, 0, 0.6)',
       '--cn-text': '#fffbda',
       '--cn-muted': 'rgba(255, 251, 218, 0.65)',
       '--cn-hover': 'rgba(255, 251, 218, 0.08)',
       '--cn-ring': 'rgba(255, 251, 218, 0.55)',
-      '--cn-tile': 'linear-gradient(180deg, #07351c 0%, #002211 100%)',
+      '--cn-tile': 'linear-gradient(180deg, #004d27 0%, #002e17 100%)',
       '--cn-tile-rim':
-        'inset 0 0 0 1px rgba(255, 251, 218, 0.08), inset 0 1px 0 rgba(255, 251, 218, 0.14), 0 4px 10px -4px rgba(0, 0, 0, 0.6)',
+        'inset 0 0 0 1px rgba(255, 251, 218, 0.1), inset 0 1px 0 rgba(255, 251, 218, 0.16), 0 4px 10px -4px rgba(0, 0, 0, 0.6)',
       '--cn-cta': 'linear-gradient(180deg, #fffbda 0%, #ecdca0 100%)',
       '--cn-cta-ink': '#00371c',
-      '--cn-cta-shadow': 'inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 6px 16px -6px rgba(0, 35, 18, 0.7)',
+      '--cn-cta-shadow': 'inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 6px 16px -6px rgba(0, 20, 10, 0.7)',
       '--cn-cta-hover': 'brightness(0.94)'
     },
     'forest-light': {
-      '--cn-panel': 'rgba(255, 251, 218, 0.92)',
+      '--cn-panel': 'rgba(255, 251, 218, 0.94)',
       '--cn-solid': '#fffbda',
       '--cn-edge': 'rgba(0, 55, 28, 0.14)',
       '--cn-highlight': 'rgba(255, 255, 255, 0.95)',

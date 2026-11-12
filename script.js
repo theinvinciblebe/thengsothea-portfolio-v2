@@ -408,7 +408,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const isPageCyan = window.location.pathname.includes('template-cyan') || (document.documentElement.getAttribute('data-template') === 'cyan' && !window.location.pathname.includes('template-forest'));
     const curTemplate = isPageCyan ? 'cyan' : (localStorage.getItem('sothea_portfolio_template') || document.documentElement.getAttribute('data-template') || 'forest');
     const isCyan = curTemplate === 'cyan';
-    const topoColor = isCyan ? '#06b6d4' : '#fffbda';
+    const isLight = document.body.classList.contains('light-theme') || (localStorage.getItem('sothea_portfolio_theme') === 'light');
+    const topoColor = isCyan ? (isLight ? '#0891b2' : '#06b6d4') : (isLight ? '#00371c' : '#fffbda');
 
     window.topographyInstance = initTopography(topographyBg, {
       color: topoColor,
@@ -471,11 +472,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const isPageCyan = window.location.pathname.includes('template-cyan') || (document.documentElement.getAttribute('data-template') === 'cyan' && !window.location.pathname.includes('template-forest'));
     const curTemplate = isPageCyan ? 'cyan' : (localStorage.getItem('sothea_portfolio_template') || document.documentElement.getAttribute('data-template') || 'forest');
     const isCyan = curTemplate === 'cyan';
+    const isLight = document.body.classList.contains('light-theme') || (localStorage.getItem('sothea_portfolio_theme') === 'light');
 
     window.gyroCursorInstance = initGyroscopeCursor({
-      color: isCyan ? '#06b6d4' : '#fffbda',
-      glow: isCyan ? 'rgba(6, 182, 212, 0.45)' : 'rgba(0, 55, 28, 0.65)',
-      badgeText: isCyan ? '#07080c' : '#00371c'
+      color: isCyan ? (isLight ? '#0891b2' : '#06b6d4') : (isLight ? '#00371c' : '#fffbda'),
+      glow: isCyan
+        ? (isLight ? 'rgba(8, 145, 178, 0.45)' : 'rgba(6, 182, 212, 0.45)')
+        : (isLight ? 'rgba(0, 55, 28, 0.25)' : 'rgba(255, 251, 218, 0.45)'),
+      badgeText: isCyan ? (isLight ? '#ffffff' : '#07080c') : (isLight ? '#fffbda' : '#00371c')
     });
   }
 
@@ -575,10 +579,45 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('sothea_portfolio_theme', theme);
     localStorage.setItem('theme-preference', theme);
 
+    const isLight = theme === 'light';
+    const curTemplate = document.documentElement.getAttribute('data-template') || 'forest';
+    const isCyan = curTemplate === 'cyan';
+
     // Update CardNav theme if initialized
     if (window.cardNavInstance && typeof window.cardNavInstance.update === 'function') {
       window.cardNavInstance.update({
-        theme: theme === 'light' ? 'light' : 'dark'
+        theme: isLight ? 'light' : 'dark'
+      });
+    }
+
+    // Update Topography 3D background if initialized
+    if (window.topographyInstance && typeof window.topographyInstance.update === 'function') {
+      window.topographyInstance.update({
+        color: isCyan ? (isLight ? '#0891b2' : '#06b6d4') : (isLight ? '#00371c' : '#fffbda')
+      });
+    }
+
+    // Update Gyroscope Cursor if initialized
+    if (window.gyroCursorInstance && typeof window.gyroCursorInstance.update === 'function') {
+      window.gyroCursorInstance.update({
+        color: isCyan ? (isLight ? '#0891b2' : '#06b6d4') : (isLight ? '#00371c' : '#fffbda'),
+        glow: isCyan
+          ? (isLight ? 'rgba(8, 145, 178, 0.45)' : 'rgba(6, 182, 212, 0.45)')
+          : (isLight ? 'rgba(0, 55, 28, 0.25)' : 'rgba(255, 251, 218, 0.45)'),
+        badgeText: isCyan ? (isLight ? '#ffffff' : '#07080c') : (isLight ? '#fffbda' : '#00371c')
+      });
+    }
+
+    // Update 3D Lanyard if initialized
+    if (window.lanyardInstance && typeof window.lanyardInstance.update === 'function') {
+      const backImg = typeof generateBadgeBack === 'function' ? generateBadgeBack(curTemplate) : undefined;
+      const strapImg = typeof generateStrap === 'function' ? generateStrap(curTemplate) : undefined;
+
+      window.lanyardInstance.update({
+        cardColor: isCyan ? (isLight ? '#f0f9ff' : '#07080c') : (isLight ? '#fffbda' : '#00371c'),
+        strapColor: isCyan ? '#06b6d4' : (isLight ? '#00371c' : '#fffbda'),
+        backImage: backImg,
+        strapImage: strapImg
       });
     }
   };
@@ -661,15 +700,17 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.classList.toggle('active', btn.getAttribute('data-template-val') === validTemplate);
     });
 
+    const isCyan = validTemplate === 'cyan';
+    const isLight = document.body.classList.contains('light-theme');
+
     // Update 3D Lanyard if initialized
     if (window.lanyardInstance && typeof window.lanyardInstance.update === 'function') {
-      const isCyan = validTemplate === 'cyan';
       const backImg = typeof generateBadgeBack === 'function' ? generateBadgeBack(validTemplate) : undefined;
       const strapImg = typeof generateStrap === 'function' ? generateStrap(validTemplate) : undefined;
 
       window.lanyardInstance.update({
-        cardColor: isCyan ? '#07080c' : '#fffbda',
-        strapColor: isCyan ? '#06b6d4' : '#00371c',
+        cardColor: isCyan ? (isLight ? '#f0f9ff' : '#07080c') : (isLight ? '#fffbda' : '#00371c'),
+        strapColor: isCyan ? '#06b6d4' : (isLight ? '#00371c' : '#fffbda'),
         backImage: backImg,
         strapImage: strapImg
       });
@@ -677,19 +718,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update Topography 3D background if initialized
     if (window.topographyInstance && typeof window.topographyInstance.update === 'function') {
-      const isCyan = validTemplate === 'cyan';
       window.topographyInstance.update({
-        color: isCyan ? '#06b6d4' : '#fffbda'
+        color: isCyan ? (isLight ? '#0891b2' : '#06b6d4') : (isLight ? '#00371c' : '#fffbda')
       });
     }
 
     // Update Gyroscope Cursor if initialized
     if (window.gyroCursorInstance && typeof window.gyroCursorInstance.update === 'function') {
-      const isCyan = validTemplate === 'cyan';
       window.gyroCursorInstance.update({
-        color: isCyan ? '#06b6d4' : '#fffbda',
-        glow: isCyan ? 'rgba(6, 182, 212, 0.45)' : 'rgba(0, 55, 28, 0.65)',
-        badgeText: isCyan ? '#07080c' : '#00371c'
+        color: isCyan ? (isLight ? '#0891b2' : '#06b6d4') : (isLight ? '#00371c' : '#fffbda'),
+        glow: isCyan
+          ? (isLight ? 'rgba(8, 145, 178, 0.45)' : 'rgba(6, 182, 212, 0.45)')
+          : (isLight ? 'rgba(0, 55, 28, 0.25)' : 'rgba(255, 251, 218, 0.45)'),
+        badgeText: isCyan ? (isLight ? '#ffffff' : '#07080c') : (isLight ? '#fffbda' : '#00371c')
       });
     }
 
@@ -1159,12 +1200,14 @@ document.addEventListener('DOMContentLoaded', () => {
       ? window.SOTHEA_PF_DATAURL
       : 'assets/sothea_pf.png';
 
+    const isLight = document.body.classList.contains('light-theme') || (localStorage.getItem('sothea_portfolio_theme') === 'light');
+
     window.lanyardInstance = initLanyard(lanyardContainer, {
       frontImage: frontImg,
       backImage: badgeBack,
       strapImage: strapBand,
-      cardColor: isCyan ? '#07080c' : '#fffbda',
-      strapColor: isCyan ? '#06b6d4' : '#00371c',
+      cardColor: isCyan ? (isLight ? '#f0f9ff' : '#07080c') : (isLight ? '#fffbda' : '#00371c'),
+      strapColor: isCyan ? '#06b6d4' : (isLight ? '#00371c' : '#fffbda'),
       finish: 'glossy',
       metal: 'silver',
       breeze: 0.35,
