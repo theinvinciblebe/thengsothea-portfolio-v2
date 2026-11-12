@@ -328,6 +328,13 @@ document.addEventListener('DOMContentLoaded', () => {
     isDeleting = false;
     if (typingTimeoutId) clearTimeout(typingTimeoutId);
     typeRole();
+
+    // Update CardNav language if initialized
+    if (window.cardNavInstance && typeof window.cardNavInstance.update === 'function') {
+      window.cardNavInstance.update({
+        lang: currentLang
+      });
+    }
   }
 
   // Typewriter Animation
@@ -366,6 +373,29 @@ document.addEventListener('DOMContentLoaded', () => {
       applyLanguage(targetLang);
     });
   });
+
+  /* ==========================================================================
+     SCROLL REVEALS OBSERVER
+     ========================================================================== */
+  const revealElements = document.querySelectorAll('.reveal-on-scroll');
+  const revealObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    root: null,
+    threshold: 0.12,
+    rootMargin: '0px 0px -40px 0px'
+  });
+
+  function triggerScrollReveals() {
+    revealElements.forEach((el) => {
+      revealObserver.observe(el);
+    });
+  }
 
   /* ==========================================================================
      2. WELCOME SCREEN CONTROLLER & TOPOGRAPHY 3D BACKGROUND (REACT BITS)
@@ -450,6 +480,37 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
+     2c. CARDNAV COMPONENT (REACT BITS)
+     Interactive expandable floating card navigation bar with spring physics
+     ========================================================================== */
+  const cardNavContainer = document.getElementById('card-nav-container');
+  if (cardNavContainer && typeof initCardNav === 'function') {
+    const isPageCyan = window.location.pathname.includes('template-cyan') || (document.documentElement.getAttribute('data-template') === 'cyan' && !window.location.pathname.includes('template-forest'));
+    const curTemplate = isPageCyan ? 'cyan' : (localStorage.getItem('sothea_portfolio_template') || document.documentElement.getAttribute('data-template') || 'forest');
+    const isLight = document.body.classList.contains('light-theme') || (localStorage.getItem('sothea_portfolio_theme') === 'light');
+    const currentLang = (document.documentElement.getAttribute('lang') || 'en').startsWith('km') ? 'km' : 'en';
+
+    window.cardNavInstance = initCardNav(cardNavContainer, {
+      template: curTemplate,
+      theme: isLight ? 'light' : 'dark',
+      lang: currentLang,
+      cardEffect: 'rise',
+      stagger: 0.12,
+      bounce: 0.22,
+      speed: 1.05,
+      surface: 'glass',
+      menuLabel: true,
+      intro: true,
+      logo: '<span class="logo-bracket">&lt;</span>Theng <span class="text-cyan">Sothea</span><span class="logo-bracket">/&gt;</span>',
+      logoHref: '#home',
+      cta: {
+        label: currentLang === 'km' ? 'ទាក់ទងមកខ្ញុំ' : 'Get in touch',
+        href: '#contact'
+      }
+    });
+  }
+
+  /* ==========================================================================
      3. NAVBAR SCROLL EFFECT & SCROLL SPY
      ========================================================================== */
   const navbar = document.getElementById('navbar');
@@ -513,6 +574,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     localStorage.setItem('sothea_portfolio_theme', theme);
     localStorage.setItem('theme-preference', theme);
+
+    // Update CardNav theme if initialized
+    if (window.cardNavInstance && typeof window.cardNavInstance.update === 'function') {
+      window.cardNavInstance.update({
+        theme: theme === 'light' ? 'light' : 'dark'
+      });
+    }
   };
 
   applyTheme(savedTheme);
@@ -622,6 +690,13 @@ document.addEventListener('DOMContentLoaded', () => {
         color: isCyan ? '#06b6d4' : '#fffbda',
         glow: isCyan ? 'rgba(6, 182, 212, 0.45)' : 'rgba(0, 55, 28, 0.65)',
         badgeText: isCyan ? '#07080c' : '#00371c'
+      });
+    }
+
+    // Update CardNav if initialized
+    if (window.cardNavInstance && typeof window.cardNavInstance.update === 'function') {
+      window.cardNavInstance.update({
+        template: validTemplate
       });
     }
   };
@@ -1068,30 +1143,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const yearSpan = document.getElementById('current-year');
   if (yearSpan) {
     yearSpan.textContent = new Date().getFullYear();
-  }
-
-  /* ==========================================================================
-     12. INTERSECTION OBSERVER SCROLL REVEALS
-     ========================================================================== */
-  const revealElements = document.querySelectorAll('.reveal-on-scroll');
-
-  const revealObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-revealed');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, {
-    root: null,
-    threshold: 0.12,
-    rootMargin: '0px 0px -40px 0px'
-  });
-
-  function triggerScrollReveals() {
-    revealElements.forEach((el) => {
-      revealObserver.observe(el);
-    });
   }
 
   /* ==========================================================================

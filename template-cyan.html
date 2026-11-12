@@ -49,6 +49,7 @@
   <link rel="stylesheet" href="Lanyard.css" />
   <link rel="stylesheet" href="Topography.css" />
   <link rel="stylesheet" href="GyroscopeCursor.css" />
+  <link rel="stylesheet" href="CardNav.css" />
 
   <!-- Import map for Three.js module environments -->
   <script type="importmap">
@@ -104,29 +105,14 @@
   </div>
 
   <!-- ======================================================== -->
-  <!-- 2. STICKY NAVBAR                                         -->
+  <!-- 2. STICKY NAVBAR WITH CARDNAV (REACT BITS)               -->
   <!-- ======================================================== -->
   <header id="navbar" class="navbar">
     <div class="navbar-container">
-      <!-- Logo with Multi-color Rainbow Text Effect -->
-      <a href="#home" class="logo-link" aria-label="Theng Sothea Home" data-i18n="nav.logo">
-        <span class="logo-bracket">&lt;</span>Theng <span class="text-cyan">Sothea</span><span
-          class="logo-bracket">/&gt;</span>
-      </a>
+      <!-- CardNav Expandable Floating Card Navigation (React Bits) -->
+      <div id="card-nav-container" class="card-nav-host"></div>
 
-      <!-- Desktop Navigation Menu -->
-      <nav class="nav-links" aria-label="Main Navigation">
-        <a href="#home" class="nav-item active" data-i18n="nav.home">Home</a>
-        <a href="#about" class="nav-item" data-i18n="nav.about">About</a>
-        <a href="#skills" class="nav-item" data-i18n="nav.skills">Skills</a>
-        <a href="#experience" class="nav-item" data-i18n="nav.experience">Experience</a>
-        <a href="#projects" class="nav-item" data-i18n="nav.projects">Projects</a>
-        <a href="#education" class="nav-item" data-i18n="nav.education">Education</a>
-        <a href="#guestbook" class="nav-item" data-i18n="nav.guestbook">Guestbook</a>
-        <a href="#contact" class="nav-item" data-i18n="nav.contact">Contact</a>
-      </nav>
-
-      <!-- Navbar Actions (Language Switcher & Theme Switcher) -->
+      <!-- Navbar Actions (Template Selector, Language Switcher & Theme Switcher) -->
       <div class="navbar-actions">
         <!-- Template Selector Pill -->
         <div class="template-selector-group" role="group" aria-label="Template Presets">
@@ -178,27 +164,7 @@
             </svg>
           </span>
         </button>
-
-        <!-- Mobile Drawer Toggle -->
-        <button id="mobile-menu-toggle" class="icon-btn mobile-only" aria-label="Toggle navigation menu">
-          <i class="fa-solid fa-bars hamburger-icon"></i>
-          <i class="fa-solid fa-xmark close-icon"></i>
-        </button>
       </div>
-    </div>
-
-    <!-- Mobile Drawer Navigation -->
-    <div id="mobile-drawer" class="mobile-drawer">
-      <nav class="mobile-nav-links">
-        <a href="#home" class="mobile-nav-item" data-i18n="nav.home">Home</a>
-        <a href="#about" class="mobile-nav-item" data-i18n="nav.about">About</a>
-        <a href="#skills" class="mobile-nav-item" data-i18n="nav.skills">Skills</a>
-        <a href="#experience" class="mobile-nav-item" data-i18n="nav.experience">Experience</a>
-        <a href="#projects" class="mobile-nav-item" data-i18n="nav.projects">Projects</a>
-        <a href="#education" class="mobile-nav-item" data-i18n="nav.education">Education</a>
-        <a href="#guestbook" class="mobile-nav-item" data-i18n="nav.guestbook">Guestbook</a>
-        <a href="#contact" class="mobile-nav-item" data-i18n="nav.contact">Contact</a>
-      </nav>
     </div>
   </header>
 
@@ -1413,6 +1379,8 @@
   <script src="assets/sothea_pf_data.js"></script>
   <!-- Lanyard 3D Simulation -->
   <script src="lanyard.js"></script>
+  <!-- CardNav Floating Navigation (React Bits) -->
+  <script src="card-nav.js"></script>
   <!-- Main JavaScript Logic -->
   <script src="script.js"></script>
 </body>
