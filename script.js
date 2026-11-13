@@ -502,6 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
       stagger: 0.12,
       bounce: 0.22,
       speed: 1.05,
+      maxWidth: 1000,
       surface: 'glass',
       menuLabel: true,
       intro: true,
@@ -783,11 +784,183 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     6. PROJECTS CATEGORY FILTERING
+     6. PROJECTS CATEGORY FILTERING & SLIDER ENGINE
      ========================================================================== */
   const filterBtns = document.querySelectorAll('.filter-btn');
   const projectCards = document.querySelectorAll('.project-card');
+  const sliderTrack = document.getElementById('projects-slider-track');
+  const prevBtn = document.getElementById('projects-prev-btn');
+  const nextBtn = document.getElementById('projects-next-btn');
+  const counterEl = document.getElementById('projects-slider-counter');
+  const dotsContainer = document.getElementById('projects-slider-dots');
 
+  // Slider State & Helper functions
+  const getVisibleCards = () => {
+    if (!sliderTrack) return [];
+    return Array.from(sliderTrack.querySelectorAll('.project-card')).filter(
+      (card) => card.style.display !== 'none'
+    );
+  };
+
+  const updateSliderUI = () => {
+    if (!sliderTrack) return;
+    const visibleCards = getVisibleCards();
+    if (!visibleCards.length) return;
+
+    const trackScroll = sliderTrack.scrollLeft;
+    const cardWidth = visibleCards[0].offsetWidth;
+    const gap = parseFloat(getComputedStyle(sliderTrack).gap) || 28;
+    const step = cardWidth + gap;
+
+    const activeIndex = Math.min(
+      Math.max(0, Math.round(trackScroll / step)),
+      visibleCards.length - 1
+    );
+
+    // Update Counter
+    if (counterEl) {
+      counterEl.textContent = `${String(activeIndex + 1).padStart(2, '0')} / ${String(visibleCards.length).padStart(2, '0')}`;
+    }
+
+    // Update Dots
+    if (dotsContainer) {
+      const dots = dotsContainer.querySelectorAll('.slider-dot');
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === activeIndex);
+        dot.setAttribute('aria-selected', idx === activeIndex ? 'true' : 'false');
+      });
+    }
+
+    // Update Arrow disabled state
+    if (prevBtn) {
+      prevBtn.classList.toggle('is-disabled', trackScroll <= 5);
+      prevBtn.setAttribute('aria-disabled', trackScroll <= 5 ? 'true' : 'false');
+    }
+    if (nextBtn) {
+      const maxScroll = sliderTrack.scrollWidth - sliderTrack.clientWidth - 5;
+      nextBtn.classList.toggle('is-disabled', trackScroll >= maxScroll);
+      nextBtn.setAttribute('aria-disabled', trackScroll >= maxScroll ? 'true' : 'false');
+    }
+  };
+
+  const buildDots = () => {
+    if (!dotsContainer || !sliderTrack) return;
+    dotsContainer.innerHTML = '';
+    const visibleCards = getVisibleCards();
+
+    visibleCards.forEach((card, idx) => {
+      const dot = document.createElement('button');
+      dot.className = `slider-dot${idx === 0 ? ' active' : ''}`;
+      dot.setAttribute('type', 'button');
+      dot.setAttribute('aria-label', `Go to project ${idx + 1}`);
+      dot.setAttribute('aria-selected', idx === 0 ? 'true' : 'false');
+      dot.addEventListener('click', () => {
+        scrollToCard(idx);
+      });
+      dotsContainer.appendChild(dot);
+    });
+    updateSliderUI();
+  };
+
+  const scrollToCard = (index) => {
+    if (!sliderTrack) return;
+    const visibleCards = getVisibleCards();
+    if (!visibleCards[index]) return;
+    const card = visibleCards[index];
+    const offset = card.offsetLeft - sliderTrack.offsetLeft;
+    sliderTrack.scrollTo({
+      left: offset,
+      behavior: 'smooth'
+    });
+  };
+
+  if (sliderTrack) {
+    let isDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+    let isDragging = false;
+
+    // Arrow Prev
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        const visibleCards = getVisibleCards();
+        if (!visibleCards.length) return;
+        const cardWidth = visibleCards[0].offsetWidth;
+        const gap = parseFloat(getComputedStyle(sliderTrack).gap) || 28;
+        sliderTrack.scrollBy({ left: -(cardWidth + gap), behavior: 'smooth' });
+      });
+    }
+
+    // Arrow Next
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        const visibleCards = getVisibleCards();
+        if (!visibleCards.length) return;
+        const cardWidth = visibleCards[0].offsetWidth;
+        const gap = parseFloat(getComputedStyle(sliderTrack).gap) || 28;
+        sliderTrack.scrollBy({ left: cardWidth + gap, behavior: 'smooth' });
+      });
+    }
+
+    // Mouse Drag Scroll for desktop
+    sliderTrack.addEventListener('mousedown', (e) => {
+      if (e.target.closest('a, button')) return;
+      isDown = true;
+      isDragging = false;
+      sliderTrack.classList.add('is-dragging');
+      startX = e.pageX - sliderTrack.offsetLeft;
+      scrollLeft = sliderTrack.scrollLeft;
+    });
+
+    sliderTrack.addEventListener('mouseleave', () => {
+      isDown = false;
+      sliderTrack.classList.remove('is-dragging');
+    });
+
+    sliderTrack.addEventListener('mouseup', () => {
+      isDown = false;
+      sliderTrack.classList.remove('is-dragging');
+    });
+
+    sliderTrack.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - sliderTrack.offsetLeft;
+      const walk = (x - startX) * 1.4;
+      if (Math.abs(walk) > 6) {
+        isDragging = true;
+      }
+      sliderTrack.scrollLeft = scrollLeft - walk;
+    });
+
+    sliderTrack.addEventListener('click', (e) => {
+      if (isDragging) {
+        e.preventDefault();
+        e.stopPropagation();
+        isDragging = false;
+      }
+    }, true);
+
+    // Scroll listener with requestAnimationFrame throttle
+    let scrollRaf = 0;
+    sliderTrack.addEventListener('scroll', () => {
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      scrollRaf = requestAnimationFrame(updateSliderUI);
+    }, { passive: true });
+
+    // Build initial dots and UI
+    buildDots();
+
+    window.addEventListener('resize', updateSliderUI, { passive: true });
+
+    // Expose refresh function
+    window.refreshProjectsSlider = () => {
+      sliderTrack.scrollTo({ left: 0, behavior: 'smooth' });
+      setTimeout(buildDots, 260);
+    };
+  }
+
+  // Filter Buttons
   filterBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       filterBtns.forEach((b) => b.classList.remove('active'));
@@ -808,9 +981,13 @@ document.addEventListener('DOMContentLoaded', () => {
           card.style.transform = 'translateY(20px)';
           setTimeout(() => {
             card.style.display = 'none';
-          }, 250);
+          }, 220);
         }
       });
+
+      if (typeof window.refreshProjectsSlider === 'function') {
+        window.refreshProjectsSlider();
+      }
     });
   });
 

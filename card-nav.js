@@ -267,7 +267,7 @@
       bounce: 0.2,
       speed: 1,
       cardHeight: 176,
-      maxWidth: 820,
+      maxWidth: 1000,
       accentColor: undefined,
       menuLabel: true,
       intro: true,
