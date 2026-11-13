@@ -167,7 +167,7 @@
           description: 'Say hello, explore source code, or collaborate.',
           links: [
             { label: 'Get In Touch', href: '#contact' },
-            { label: 'Telegram (@thengsothea)', href: 'https://t.me/thengsothea' },
+            { label: 'Telegram (@sotheatheng2002)', href: 'https://t.me/sotheatheng2002' },
             { label: 'GitHub Profile', href: 'https://github.com/theinvinciblebe' },
             { label: 'LinkedIn', href: 'https://linkedin.com/in/thengsothea' }
           ]
@@ -202,7 +202,7 @@
           description: 'ផ្ញើសារសួរសុខទុក្ខ មើលកូដ ឬពិភាក្សាការងារ។',
           links: [
             { label: 'ទាក់ទងមកខ្ញុំ', href: '#contact' },
-            { label: 'តេឡេក្រាម (@thengsothea)', href: 'https://t.me/thengsothea' },
+            { label: 'តេឡេក្រាម (@sotheatheng2002)', href: 'https://t.me/thengsothea' },
             { label: 'ទំព័រ GitHub', href: 'https://github.com/theinvinciblebe' },
             { label: 'ទំព័រ LinkedIn', href: 'https://linkedin.com/in/thengsothea' }
           ]

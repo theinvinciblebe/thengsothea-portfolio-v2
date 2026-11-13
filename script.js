@@ -621,6 +621,11 @@ document.addEventListener('DOMContentLoaded', () => {
         strapImage: strapImg
       });
     }
+
+    // Update Reflective Cards theme if initialized
+    if (typeof updateReflectiveCardsTheme === 'function') {
+      updateReflectiveCardsTheme(theme);
+    }
   };
 
   applyTheme(savedTheme);
@@ -740,6 +745,11 @@ document.addEventListener('DOMContentLoaded', () => {
       window.cardNavInstance.update({
         template: validTemplate
       });
+    }
+
+    // Update Reflective Cards theme if initialized
+    if (typeof updateReflectiveCardsTheme === 'function') {
+      updateReflectiveCardsTheme(isLight ? 'light' : 'dark');
     }
   };
 
@@ -1396,6 +1406,11 @@ document.addEventListener('DOMContentLoaded', () => {
       interactive: true,
       intro: true
     });
+  }
+
+  // Initialize Reflective Cards (React Bits) for education section
+  if (typeof initReflectiveCards === 'function') {
+    initReflectiveCards('.education-reflective-card');
   }
 
   // Initial runs
