@@ -51,6 +51,7 @@
   <link rel="stylesheet" href="GyroscopeCursor.css" />
   <link rel="stylesheet" href="CardNav.css" />
   <link rel="stylesheet" href="ReflectiveCard.css" />
+  <link rel="stylesheet" href="ScrollStack.css" />
 
   <!-- Import map for Three.js module environments -->
   <script type="importmap">
@@ -775,17 +776,19 @@
           <div class="project-filters">
             <button class="filter-btn active" data-filter="all" data-i18n="projects.filterAll">All Projects</button>
             <button class="filter-btn" data-filter="web" data-i18n="projects.filterWeb">Web &amp; Full-Stack</button>
-            <button class="filter-btn" data-filter="systems" data-i18n="projects.filterSystems">Systems &amp;
-              Software</button>
+            <button class="filter-btn" data-filter="systems" data-i18n="projects.filterSystems">Systems &amp; Software</button>
           </div>
 
-          <!-- Slider Controls (Arrows & Live Counter) -->
+          <!-- Slider Controls (AutoPlay, Arrows & Live Counter) -->
           <div class="projects-slider-controls" aria-label="Projects slider navigation">
-            <button class="slider-arrow-btn slider-prev" id="projects-prev-btn" aria-label="Previous Project" title="Previous Slide">
+            <button class="slider-arrow-btn slider-autoplay" id="projects-autoplay-btn" aria-label="Pause Auto Slider" title="Toggle Auto-Slide" type="button">
+              <i class="fa-solid fa-pause" aria-hidden="true"></i>
+            </button>
+            <button class="slider-arrow-btn slider-prev" id="projects-prev-btn" aria-label="Previous Project" title="Previous Slide" type="button">
               <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
             </button>
             <span class="slider-counter" id="projects-slider-counter" aria-live="polite">01 / 06</span>
-            <button class="slider-arrow-btn slider-next" id="projects-next-btn" aria-label="Next Project" title="Next Slide">
+            <button class="slider-arrow-btn slider-next" id="projects-next-btn" aria-label="Next Project" title="Next Slide" type="button">
               <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
             </button>
           </div>
@@ -794,234 +797,228 @@
         <!-- Projects Slider Wrapper & Horizontal Snap Track -->
         <div class="projects-slider-wrapper">
           <div class="projects-slider-track projects-grid" id="projects-slider-track">
-          <!-- Project 1: Business Cambodia Clone -->
-          <div class="project-card reveal-on-scroll" data-category="web">
-            <div class="card-ambient-blur"></div>
-            <div class="project-image-box">
-              <img src="assets/business_cambodia_screen.png" alt="Business Cambodia Clone" class="project-thumb" />
-              <div class="image-overlay"></div>
-            </div>
-
-            <div class="project-body">
-              <div class="project-tags">
-                <span>HTML5</span>
-                <span>CSS3</span>
-                <span>JavaScript</span>
-                <span>Responsive</span>
+            <!-- Project 1: Business Cambodia Clone -->
+            <div class="project-card reveal-on-scroll" data-category="web">
+              <div class="card-ambient-blur"></div>
+              <div class="project-image-box">
+                <img src="assets/business_cambodia_screen.png" alt="Business Cambodia Clone" class="project-thumb" />
+                <div class="image-overlay"></div>
               </div>
 
-              <h3 class="project-title" data-i18n="proj1.title">Business Cambodia Clone</h3>
-              <p class="project-description" data-i18n="proj1.desc">
-                A modern clone of the popular Business Cambodia news portal featuring responsive editorial layout,
-                news cards, categorized article streams, and smooth navigation.
-              </p>
+              <div class="project-body">
+                <div class="project-tags">
+                  <span>HTML5</span>
+                  <span>CSS3</span>
+                  <span>JavaScript</span>
+                  <span>Responsive</span>
+                </div>
 
-              <div class="project-links">
-                <a href="https://businesscambodia-website-news-clone.vercel.app/" target="_blank"
-                  rel="noopener noreferrer" class="btn-demo">
-                  <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live
-                    Demo</span>
-                </a>
-                <a href="https://github.com/theinvinciblebe/businesscambodia-website-news-clone" target="_blank"
-                  rel="noopener noreferrer" class="btn-github" aria-label="GitHub Repository" title="GitHub Repository">
-                  <i class="fa-brands fa-github"></i>
-                </a>
+                <h3 class="project-title" data-i18n="proj1.title">Business Cambodia Clone</h3>
+                <p class="project-description" data-i18n="proj1.desc">
+                  A modern clone of the popular Business Cambodia news portal featuring responsive editorial layout,
+                  news cards, categorized article streams, and smooth navigation.
+                </p>
+
+                <div class="project-links">
+                  <a href="https://businesscambodia-website-news-clone.vercel.app/" target="_blank"
+                    rel="noopener noreferrer" class="btn-demo">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live Demo</span>
+                  </a>
+                  <a href="https://github.com/theinvinciblebe/businesscambodia-website-news-clone" target="_blank"
+                    rel="noopener noreferrer" class="btn-github" aria-label="GitHub Repository"
+                    title="GitHub Repository">
+                    <i class="fa-brands fa-github"></i>
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Project 2: School Management System -->
-          <div class="project-card reveal-on-scroll delay-1" data-category="web">
-            <div class="card-ambient-blur"></div>
-            <div class="project-image-box">
-              <img src="assets/portfolio-SMS.jpg" alt="School Management System" class="project-thumb" />
-              <div class="image-overlay"></div>
-            </div>
-
-            <div class="project-body">
-              <div class="project-tags">
-                <span>Laravel</span>
-                <span>PHP</span>
-                <span>MySQL</span>
-                <span>Bootstrap</span>
-                <span>jQuery</span>
+            <!-- Project 2: School Management System -->
+            <div class="project-card reveal-on-scroll delay-1" data-category="web">
+              <div class="card-ambient-blur"></div>
+              <div class="project-image-box">
+                <img src="assets/school.png" alt="School Management System" class="project-thumb" />
+                <div class="image-overlay"></div>
               </div>
 
-              <h3 class="project-title" data-i18n="proj2.title">School Management System</h3>
-              <p class="project-description" data-i18n="proj2.desc">
-                Comprehensive educational ERP solution handling student registrations, course management, grading
-                systems, attendance logs, and administrative analytical dashboards.
-              </p>
+              <div class="project-body">
+                <div class="project-tags">
+                  <span>Laravel</span>
+                  <span>PHP</span>
+                  <span>MySQL</span>
+                  <span>Bootstrap</span>
+                  <span>jQuery</span>
+                </div>
 
-              <div class="project-links">
-                <a href="https://school-management-system-eta-gray.vercel.app/" target="_blank"
-                  rel="noopener noreferrer" class="btn-demo">
-                  <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live
-                    Demo</span>
-                </a>
-                <a href="https://youtu.be/u52D_zMyP8w" target="_blank" rel="noopener noreferrer" class="btn-video"
-                  title="Watch Video Demo" aria-label="Watch Video Demo">
-                  <i class="fa-brands fa-youtube"></i> <span data-i18n="projects.videoDemo">Video Demo</span>
-                </a>
-                <a href="https://github.com/theinvinciblebe/School-Management-System" target="_blank"
-                  rel="noopener noreferrer" class="btn-github" aria-label="GitHub Repository" title="GitHub Repository">
-                  <i class="fa-brands fa-github"></i>
-                </a>
+                <h3 class="project-title" data-i18n="proj2.title">School Management System</h3>
+                <p class="project-description" data-i18n="proj2.desc">
+                  Comprehensive educational ERP solution handling student registrations, course management, grading
+                  systems, attendance logs, and administrative analytical dashboards.
+                </p>
+
+                <div class="project-links">
+                  <a href="https://school-management-system-eta-gray.vercel.app/" target="_blank"
+                    rel="noopener noreferrer" class="btn-demo">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live Demo</span>
+                  </a>
+                  <a href="https://github.com/theinvinciblebe/School-Management-System" target="_blank"
+                    rel="noopener noreferrer" class="btn-github" aria-label="GitHub Repository"
+                    title="GitHub Repository">
+                    <i class="fa-brands fa-github"></i>
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Project 3: CMS Gaming Product -->
-          <div class="project-card reveal-on-scroll delay-2" data-category="web">
-            <div class="card-ambient-blur"></div>
-            <div class="project-image-box">
-              <img src="assets/cms_gaming.png" alt="CMS Gaming Product" class="project-thumb" />
-              <div class="image-overlay"></div>
-            </div>
-
-            <div class="project-body">
-              <div class="project-tags">
-                <span>Laravel</span>
-                <span>PHP</span>
-                <span>MySQL</span>
-                <span>Bootstrap</span>
-                <span>jQuery</span>
+            <!-- Project 3: CMS Gaming Product -->
+            <div class="project-card reveal-on-scroll delay-2" data-category="web">
+              <div class="card-ambient-blur"></div>
+              <div class="project-image-box">
+                <img src="assets/cms_gaming.png" alt="CMS Gaming Product" class="project-thumb" />
+                <div class="image-overlay"></div>
               </div>
 
-              <h3 class="project-title" data-i18n="proj3.title">CMS Gaming Product</h3>
-              <p class="project-description" data-i18n="proj3.desc">
-                Dynamic content management system crafted for gaming gear and digital products, with customizable
-                catalog filters, secure inventory handling, and user reviews.
-              </p>
+              <div class="project-body">
+                <div class="project-tags">
+                  <span>Laravel</span>
+                  <span>PHP</span>
+                  <span>MySQL</span>
+                  <span>Bootstrap</span>
+                  <span>jQuery</span>
+                </div>
 
-              <div class="project-links">
-                <a href="https://cms-gaming-product-3nhu.vercel.app/" target="_blank" rel="noopener noreferrer"
-                  class="btn-demo">
-                  <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live
-                    Demo</span>
-                </a>
-                <a href="https://github.com/theinvinciblebe/CMS-Gaming-Product" target="_blank"
-                  rel="noopener noreferrer" class="btn-github" aria-label="GitHub Repository" title="GitHub Repository">
-                  <i class="fa-brands fa-github"></i>
-                </a>
+                <h3 class="project-title" data-i18n="proj3.title">CMS Gaming Product</h3>
+                <p class="project-description" data-i18n="proj3.desc">
+                  Dynamic content management system crafted for gaming gear and digital products, with customizable
+                  catalog filters, secure inventory handling, and user reviews.
+                </p>
+
+                <div class="project-links">
+                  <a href="https://cms-gaming-product-3nhu.vercel.app/" target="_blank" rel="noopener noreferrer"
+                    class="btn-demo">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live Demo</span>
+                  </a>
+                  <a href="https://github.com/theinvinciblebe/CMS-Gaming-Product" target="_blank"
+                    rel="noopener noreferrer" class="btn-github" aria-label="GitHub Repository"
+                    title="GitHub Repository">
+                    <i class="fa-brands fa-github"></i>
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Project 4: BookStore POS System -->
-          <div class="project-card reveal-on-scroll" data-category="systems">
-            <div class="card-ambient-blur"></div>
-            <div class="project-image-box">
-              <img src="assets/bookstore_pos.jpg" alt="BookStore POS System" class="project-thumb" />
-              <div class="image-overlay"></div>
-            </div>
-
-            <div class="project-body">
-              <div class="project-tags">
-                <span>Java</span>
-                <span>Maven</span>
-                <span>MySQL</span>
-                <span>Desktop POS</span>
+            <!-- Project 4: BookStore POS System -->
+            <div class="project-card reveal-on-scroll" data-category="systems">
+              <div class="card-ambient-blur"></div>
+              <div class="project-image-box">
+                <img src="assets/bookstore_pos.jpg" alt="BookStore POS System" class="project-thumb" />
+                <div class="image-overlay"></div>
               </div>
 
-              <h3 class="project-title" data-i18n="proj4.title">BookStore POS System</h3>
-              <p class="project-description" data-i18n="proj4.desc">
-                A desktop Point of Sale and inventory tracking software built in Java with Maven and MySQL for retail
-                bookstores, including sales invoices, receipt generation, and stock alerts.
-              </p>
+              <div class="project-body">
+                <div class="project-tags">
+                  <span>Java</span>
+                  <span>Maven</span>
+                  <span>MySQL</span>
+                  <span>Desktop POS</span>
+                </div>
 
-              <div class="project-links">
-                <a href="https://youtu.be/hZtipe03dU8" target="_blank" rel="noopener noreferrer" class="btn-video">
-                  <i class="fa-brands fa-youtube"></i> <span data-i18n="projects.videoDemo">Video Demo</span>
-                </a>
-                <a href="https://github.com/theinvinciblebe/BookStore_POS" target="_blank" rel="noopener noreferrer"
-                  class="btn-github" aria-label="GitHub Repository" title="GitHub Repository">
-                  <i class="fa-brands fa-github"></i>
-                </a>
+                <h3 class="project-title" data-i18n="proj4.title">BookStore POS System</h3>
+                <p class="project-description" data-i18n="proj4.desc">
+                  A desktop Point of Sale and inventory tracking software built in Java with Maven and MySQL for retail
+                  bookstores, including sales invoices, receipt generation, and stock alerts.
+                </p>
+
+                <div class="project-links">
+                  <a href="https://youtu.be/hZtipe03dU8" target="_blank" rel="noopener noreferrer" class="btn-video">
+                    <i class="fa-brands fa-youtube"></i> <span data-i18n="projects.videoDemo">Video Demo</span>
+                  </a>
+                  <a href="https://github.com/theinvinciblebe/BookStore_POS" target="_blank" rel="noopener noreferrer"
+                    class="btn-github" aria-label="GitHub Repository" title="GitHub Repository">
+                    <i class="fa-brands fa-github"></i>
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Project 5: E-Commerce Application -->
-          <div class="project-card reveal-on-scroll delay-1" data-category="web">
-            <div class="card-ambient-blur"></div>
-            <div class="project-image-box">
-              <img src="assets/ecommerce_django.jpg" alt="E-Commerce Application" class="project-thumb" />
-              <div class="image-overlay"></div>
-            </div>
-
-            <div class="project-body">
-              <div class="project-tags">
-                <span>Python</span>
-                <span>Django</span>
-                <span>SQLite</span>
-                <span>Bootstrap</span>
+            <!-- Project 5: E-Commerce Application -->
+            <div class="project-card reveal-on-scroll delay-1" data-category="web">
+              <div class="card-ambient-blur"></div>
+              <div class="project-image-box">
+                <img src="assets/ecommerce_django.jpg" alt="E-Commerce Application" class="project-thumb" />
+                <div class="image-overlay"></div>
               </div>
 
-              <h3 class="project-title" data-i18n="proj5.title">E-Commerce Application</h3>
-              <p class="project-description" data-i18n="proj5.desc">
-                Full-featured online e-commerce platform built with Python Django framework, featuring product catalog
-                categorization, cart management, customer accounts, and order processing.
-              </p>
+              <div class="project-body">
+                <div class="project-tags">
+                  <span>Python</span>
+                  <span>Django</span>
+                  <span>SQLite</span>
+                  <span>Bootstrap</span>
+                </div>
 
-              <div class="project-links">
-                <a href="https://youtu.be/AQPn6fPKXks" target="_blank" rel="noopener noreferrer" class="btn-video">
-                  <i class="fa-brands fa-youtube"></i> <span data-i18n="projects.videoDemo">Video Demo</span>
-                </a>
-                <a href="https://github.com/theinvinciblebe/Ecommerce-Django" target="_blank" rel="noopener noreferrer"
-                  class="btn-github" aria-label="GitHub Repository" title="GitHub Repository">
-                  <i class="fa-brands fa-github"></i>
-                </a>
+                <h3 class="project-title" data-i18n="proj5.title">E-Commerce Application</h3>
+                <p class="project-description" data-i18n="proj5.desc">
+                  Full-featured online e-commerce platform built with Python Django framework, featuring product catalog
+                  categorization, cart management, customer accounts, and order processing.
+                </p>
+
+                <div class="project-links">
+                  <a href="https://youtu.be/AQPn6fPKXks" target="_blank" rel="noopener noreferrer" class="btn-video">
+                    <i class="fa-brands fa-youtube"></i> <span data-i18n="projects.videoDemo">Video Demo</span>
+                  </a>
+                  <a href="https://github.com/theinvinciblebe/Ecommerce-Django" target="_blank"
+                    rel="noopener noreferrer" class="btn-github" aria-label="GitHub Repository"
+                    title="GitHub Repository">
+                    <i class="fa-brands fa-github"></i>
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Project 6: Depreciation System -->
-          <div class="project-card reveal-on-scroll delay-2" data-category="systems">
-            <div class="card-ambient-blur"></div>
-            <div class="project-image-box">
-              <img src="assets/depreciation.jpg" alt="Depreciation System" class="project-thumb" />
-              <div class="image-overlay"></div>
-            </div>
-
-            <div class="project-body">
-              <div class="project-tags">
-                <span>PHP</span>
-                <span>MySQL</span>
-                <span>Accounting</span>
-                <span>Financial Calc</span>
+            <!-- Project 6: Depreciation System -->
+            <div class="project-card reveal-on-scroll delay-2" data-category="systems">
+              <div class="card-ambient-blur"></div>
+              <div class="project-image-box">
+                <img src="assets/depre_system.png" alt="Depreciation System" class="project-thumb" />
+                <div class="image-overlay"></div>
               </div>
 
-              <h3 class="project-title" data-i18n="proj6.title">Depreciation System</h3>
-              <p class="project-description" data-i18n="proj6.desc">
-                Specialized asset management and accounting system for calculating fixed-asset depreciation schedules,
-                salvage estimations, ledger tracking, and exporting financial asset reports.
-              </p>
+              <div class="project-body">
+                <div class="project-tags">
+                  <span>PHP</span>
+                  <span>MySQL</span>
+                  <span>Accounting</span>
+                  <span>Financial Calc</span>
+                </div>
 
-              <div class="project-links">
-                <a href="https://depreciationssystem.vercel.app/" target="_blank" rel="noopener noreferrer"
-                  class="btn-demo">
-                  <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live
-                    Demo</span>
-                </a>
-                <a href="https://www.youtube.com/watch?v=peapBO5NgXY" target="_blank" rel="noopener noreferrer"
-                  class="btn-video" title="Watch Video Demo" aria-label="Watch Video Demo">
-                  <i class="fa-brands fa-youtube"></i> <span data-i18n="projects.videoDemo">Video Demo</span>
-                </a>
-                <a href="https://github.com/theinvinciblebe/Depreciation-System" target="_blank"
-                  rel="noopener noreferrer" class="btn-github" aria-label="GitHub Repository" title="GitHub Repository">
-                  <i class="fa-brands fa-github"></i>
-                </a>
+                <h3 class="project-title" data-i18n="proj6.title">Depreciation System</h3>
+                <p class="project-description" data-i18n="proj6.desc">
+                  Specialized asset management and accounting system for calculating fixed-asset depreciation schedules,
+                  salvage estimations, ledger tracking, and exporting financial asset reports.
+                </p>
+
+                <div class="project-links">
+                  <a href="https://depreciationssystem.vercel.app/" target="_blank" rel="noopener noreferrer"
+                    class="btn-demo">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live Demo</span>
+                  </a>
+                  <a href="https://github.com/theinvinciblebe/Depreciation-System" target="_blank"
+                    rel="noopener noreferrer" class="btn-github" aria-label="GitHub Repository"
+                    title="GitHub Repository">
+                    <i class="fa-brands fa-github"></i>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Slider Pagination Dots -->
-      <div class="projects-slider-dots" id="projects-slider-dots" role="tablist" aria-label="Project slide navigation"></div>
-    </div>
-  </section>
+        <!-- Slider Pagination Dots -->
+        <div class="projects-slider-dots" id="projects-slider-dots" role="tablist"
+          aria-label="Project slide navigation"></div>
+      </div>
+    </section>
 
   <!-- ======================================================== -->
   <!-- 8. EDUCATION SECTION (#education)                       -->
@@ -1508,6 +1505,8 @@
   <script src="card-nav.js"></script>
   <!-- ReflectiveCard WebGL2 Surface (React Bits) -->
   <script src="reflective-card.js"></script>
+  <!-- ScrollStack Card Stacking Engine (React Bits) -->
+  <script src="scroll-stack.js"></script>
   <!-- Main JavaScript Logic -->
   <script src="script.js"></script>
 </body>

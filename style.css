@@ -228,7 +228,7 @@ body {
   background-color: var(--bg-body);
   color: var(--text-primary);
   line-height: 1.6;
-  overflow-x: hidden;
+  overflow-x: clip;
   transition: background-color var(--transition-slow), color var(--transition-slow);
   position: relative;
   min-height: 100vh;
@@ -2220,6 +2220,51 @@ body.light-theme .orbit-center-name {
   opacity: 0.35;
   cursor: not-allowed;
   pointer-events: none;
+}
+
+/* Automation Slider AutoPlay Button */
+.slider-arrow-btn.slider-autoplay {
+  background: rgba(6, 182, 212, 0.12);
+  border-color: rgba(6, 182, 212, 0.35);
+  color: var(--accent-cyan);
+}
+
+.slider-arrow-btn.slider-autoplay.is-paused {
+  background: var(--bg-card);
+  border-color: var(--border-color);
+  color: var(--text-muted);
+}
+
+.slider-arrow-btn.slider-autoplay:not(.is-paused) i {
+  animation: pulse-autoplay 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse-autoplay {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.25); }
+}
+
+[data-template="forest"] .slider-arrow-btn.slider-autoplay {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.35);
+  color: var(--accent-forest, #10b981);
+}
+
+[data-template="forest"] .slider-arrow-btn.slider-autoplay:hover:not(:disabled) {
+  background: var(--accent-forest, #10b981);
+  color: #07080c;
+  border-color: var(--accent-forest, #10b981);
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
+}
+
+.project-card.is-active-slide {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 16px 36px rgba(6, 182, 212, 0.22);
+}
+
+[data-template="forest"] .project-card.is-active-slide {
+  border-color: var(--accent-forest, #10b981);
+  box-shadow: 0 16px 36px rgba(16, 185, 129, 0.22);
 }
 
 /* Projects Slider Wrapper & Horizontal Snap Track */

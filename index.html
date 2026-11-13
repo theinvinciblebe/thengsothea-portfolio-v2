@@ -51,6 +51,7 @@
   <link rel="stylesheet" href="GyroscopeCursor.css" />
   <link rel="stylesheet" href="CardNav.css" />
   <link rel="stylesheet" href="ReflectiveCard.css" />
+  <link rel="stylesheet" href="ScrollStack.css" />
 
   <!-- Import map for Three.js module environments -->
   <script type="importmap">
@@ -777,19 +778,19 @@
           <div class="project-filters">
             <button class="filter-btn active" data-filter="all" data-i18n="projects.filterAll">All Projects</button>
             <button class="filter-btn" data-filter="web" data-i18n="projects.filterWeb">Web &amp; Full-Stack</button>
-            <button class="filter-btn" data-filter="systems" data-i18n="projects.filterSystems">Systems &amp;
-              Software</button>
+            <button class="filter-btn" data-filter="systems" data-i18n="projects.filterSystems">Systems &amp; Software</button>
           </div>
 
-          <!-- Slider Controls (Arrows & Live Counter) -->
+          <!-- Slider Controls (AutoPlay, Arrows & Live Counter) -->
           <div class="projects-slider-controls" aria-label="Projects slider navigation">
-            <button class="slider-arrow-btn slider-prev" id="projects-prev-btn" aria-label="Previous Project"
-              title="Previous Slide">
+            <button class="slider-arrow-btn slider-autoplay" id="projects-autoplay-btn" aria-label="Pause Auto Slider" title="Toggle Auto-Slide" type="button">
+              <i class="fa-solid fa-pause" aria-hidden="true"></i>
+            </button>
+            <button class="slider-arrow-btn slider-prev" id="projects-prev-btn" aria-label="Previous Project" title="Previous Slide" type="button">
               <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
             </button>
             <span class="slider-counter" id="projects-slider-counter" aria-live="polite">01 / 06</span>
-            <button class="slider-arrow-btn slider-next" id="projects-next-btn" aria-label="Next Project"
-              title="Next Slide">
+            <button class="slider-arrow-btn slider-next" id="projects-next-btn" aria-label="Next Project" title="Next Slide" type="button">
               <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
             </button>
           </div>
@@ -823,8 +824,7 @@
                 <div class="project-links">
                   <a href="https://businesscambodia-website-news-clone.vercel.app/" target="_blank"
                     rel="noopener noreferrer" class="btn-demo">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live
-                      Demo</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live Demo</span>
                   </a>
                   <a href="https://github.com/theinvinciblebe/businesscambodia-website-news-clone" target="_blank"
                     rel="noopener noreferrer" class="btn-github" aria-label="GitHub Repository"
@@ -861,8 +861,7 @@
                 <div class="project-links">
                   <a href="https://school-management-system-eta-gray.vercel.app/" target="_blank"
                     rel="noopener noreferrer" class="btn-demo">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live
-                      Demo</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live Demo</span>
                   </a>
                   <a href="https://github.com/theinvinciblebe/School-Management-System" target="_blank"
                     rel="noopener noreferrer" class="btn-github" aria-label="GitHub Repository"
@@ -899,8 +898,7 @@
                 <div class="project-links">
                   <a href="https://cms-gaming-product-3nhu.vercel.app/" target="_blank" rel="noopener noreferrer"
                     class="btn-demo">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live
-                      Demo</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live Demo</span>
                   </a>
                   <a href="https://github.com/theinvinciblebe/CMS-Gaming-Product" target="_blank"
                     rel="noopener noreferrer" class="btn-github" aria-label="GitHub Repository"
@@ -1005,8 +1003,7 @@
                 <div class="project-links">
                   <a href="https://depreciationssystem.vercel.app/" target="_blank" rel="noopener noreferrer"
                     class="btn-demo">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live
-                      Demo</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live Demo</span>
                   </a>
                   <a href="https://github.com/theinvinciblebe/Depreciation-System" target="_blank"
                     rel="noopener noreferrer" class="btn-github" aria-label="GitHub Repository"
@@ -1513,6 +1510,8 @@
   <script src="card-nav.js"></script>
   <!-- ReflectiveCard WebGL2 Surface (React Bits) -->
   <script src="reflective-card.js"></script>
+  <!-- ScrollStack Card Stacking Engine (React Bits) -->
+  <script src="scroll-stack.js"></script>
   <!-- Main JavaScript Logic -->
   <script src="script.js"></script>
 </body>

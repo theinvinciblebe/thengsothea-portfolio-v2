@@ -79,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
       "projects.liveDemo": "Live Demo",
       "projects.videoDemo": "Video Demo",
       "projects.github": "GitHub",
+      "projects.stackHint": "Scroll down to stack cards",
       "proj1.title": "Business Cambodia Clone",
       "proj1.desc": "A modern clone of the popular Business Cambodia news portal featuring responsive editorial layout, news cards, categorized article streams, and smooth navigation.",
       "proj2.title": "School Management System",
@@ -207,6 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
       "projects.liveDemo": "សាកល្បងផ្ទាល់",
       "projects.videoDemo": "វីដេអូបង្ហាញ",
       "projects.github": "GitHub",
+      "projects.stackHint": "រមូរចុះក្រោមដើម្បីតម្រៀបកាត",
       "proj1.title": "គេហទំព័រព័ត៌មាន Business Cambodia (Clone)",
       "proj1.desc": "ការចម្លងគេហទំព័រសារព័ត៌មាន Business Cambodia ដ៏ពេញនិយម ដែលមានទម្រង់ប្លង់បែប Responsive ការបង្ហាញអត្ថបទតាមប្រភេទច្បាស់លាស់ និងការរុករកយ៉ាងរលូន។",
       "proj2.title": "ប្រព័ន្ធគ្រប់គ្រងសាលារៀន (School Management System)",
@@ -801,8 +803,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const sliderTrack = document.getElementById('projects-slider-track');
   const prevBtn = document.getElementById('projects-prev-btn');
   const nextBtn = document.getElementById('projects-next-btn');
+  const autoplayBtn = document.getElementById('projects-autoplay-btn');
   const counterEl = document.getElementById('projects-slider-counter');
   const dotsContainer = document.getElementById('projects-slider-dots');
+
+  // Automation Slider State
+  let isAutoplay = true;
+  let autoplayInterval = null;
+  const autoplayDelay = 2000; // 1s automated slide interval
+  let isHovered = false;
+  let isUserInteracting = false;
+  let resumeTimer = null;
+  let currentSlideIndex = 0;
+  let isProgrammaticScroll = false;
+  let programmaticTimer = null;
 
   // Slider State & Helper functions
   const getVisibleCards = () => {
@@ -812,45 +826,69 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   };
 
-  const updateSliderUI = () => {
-    if (!sliderTrack) return;
+  const renderActiveState = (activeIndex) => {
     const visibleCards = getVisibleCards();
     if (!visibleCards.length) return;
 
-    const trackScroll = sliderTrack.scrollLeft;
-    const cardWidth = visibleCards[0].offsetWidth;
-    const gap = parseFloat(getComputedStyle(sliderTrack).gap) || 28;
-    const step = cardWidth + gap;
+    // Clamp active index
+    const safeIndex = Math.max(0, Math.min(activeIndex, visibleCards.length - 1));
 
-    const activeIndex = Math.min(
-      Math.max(0, Math.round(trackScroll / step)),
-      visibleCards.length - 1
-    );
-
-    // Update Counter
+    // Update Counter (e.g. 01 / 06)
     if (counterEl) {
-      counterEl.textContent = `${String(activeIndex + 1).padStart(2, '0')} / ${String(visibleCards.length).padStart(2, '0')}`;
+      counterEl.textContent = `${String(safeIndex + 1).padStart(2, '0')} / ${String(visibleCards.length).padStart(2, '0')}`;
     }
+
+    // Update Active Card Highlights
+    visibleCards.forEach((card, idx) => {
+      card.classList.toggle('is-active-slide', idx === safeIndex);
+    });
 
     // Update Dots
     if (dotsContainer) {
       const dots = dotsContainer.querySelectorAll('.slider-dot');
       dots.forEach((dot, idx) => {
-        dot.classList.toggle('active', idx === activeIndex);
-        dot.setAttribute('aria-selected', idx === activeIndex ? 'true' : 'false');
+        dot.classList.toggle('active', idx === safeIndex);
+        dot.setAttribute('aria-selected', idx === safeIndex ? 'true' : 'false');
       });
     }
 
-    // Update Arrow disabled state
+    // Update Arrow disabled state (keep active for continuous looping in autoplay mode)
+    const trackScroll = sliderTrack ? sliderTrack.scrollLeft : 0;
     if (prevBtn) {
-      prevBtn.classList.toggle('is-disabled', trackScroll <= 5);
-      prevBtn.setAttribute('aria-disabled', trackScroll <= 5 ? 'true' : 'false');
+      prevBtn.classList.toggle('is-disabled', !isAutoplay && safeIndex === 0 && trackScroll <= 5);
     }
     if (nextBtn) {
-      const maxScroll = sliderTrack.scrollWidth - sliderTrack.clientWidth - 5;
-      nextBtn.classList.toggle('is-disabled', trackScroll >= maxScroll);
-      nextBtn.setAttribute('aria-disabled', trackScroll >= maxScroll ? 'true' : 'false');
+      nextBtn.classList.toggle('is-disabled', !isAutoplay && safeIndex === visibleCards.length - 1);
     }
+  };
+
+  const updateSliderUI = () => {
+    if (!sliderTrack) return;
+    const visibleCards = getVisibleCards();
+    if (!visibleCards.length) return;
+
+    // During programmatic smooth animation, preserve currentSlideIndex
+    if (isProgrammaticScroll) return;
+
+    const trackScroll = sliderTrack.scrollLeft;
+    const maxScroll = Math.max(0, sliderTrack.scrollWidth - sliderTrack.clientWidth);
+    const cardWidth = visibleCards[0].offsetWidth;
+    const gap = parseFloat(getComputedStyle(sliderTrack).gap) || 28;
+    const step = cardWidth + gap;
+
+    if (maxScroll > 0 && trackScroll >= maxScroll - 6) {
+      const maxScrollCardIndex = Math.min(Math.round(maxScroll / step), visibleCards.length - 1);
+      if (currentSlideIndex < maxScrollCardIndex) {
+        currentSlideIndex = maxScrollCardIndex;
+      }
+    } else {
+      currentSlideIndex = Math.min(
+        Math.max(0, Math.round(trackScroll / step)),
+        visibleCards.length - 1
+      );
+    }
+
+    renderActiveState(currentSlideIndex);
   };
 
   const buildDots = () => {
@@ -860,28 +898,109 @@ document.addEventListener('DOMContentLoaded', () => {
 
     visibleCards.forEach((card, idx) => {
       const dot = document.createElement('button');
-      dot.className = `slider-dot${idx === 0 ? ' active' : ''}`;
+      dot.className = `slider-dot${idx === currentSlideIndex ? ' active' : ''}`;
       dot.setAttribute('type', 'button');
       dot.setAttribute('aria-label', `Go to project ${idx + 1}`);
-      dot.setAttribute('aria-selected', idx === 0 ? 'true' : 'false');
+      dot.setAttribute('aria-selected', idx === currentSlideIndex ? 'true' : 'false');
       dot.addEventListener('click', () => {
         scrollToCard(idx);
+        restartAutoplayTimer();
       });
       dotsContainer.appendChild(dot);
     });
-    updateSliderUI();
+    renderActiveState(currentSlideIndex);
   };
 
   const scrollToCard = (index) => {
     if (!sliderTrack) return;
     const visibleCards = getVisibleCards();
-    if (!visibleCards[index]) return;
-    const card = visibleCards[index];
+    if (!visibleCards.length) return;
+
+    const safeIndex = Math.max(0, Math.min(index, visibleCards.length - 1));
+    currentSlideIndex = safeIndex;
+
+    // Lock programmatic scroll flag during smooth transition
+    isProgrammaticScroll = true;
+    if (programmaticTimer) clearTimeout(programmaticTimer);
+    programmaticTimer = setTimeout(() => {
+      isProgrammaticScroll = false;
+    }, 550);
+
+    const card = visibleCards[safeIndex];
     const offset = card.offsetLeft - sliderTrack.offsetLeft;
+    const maxScroll = Math.max(0, sliderTrack.scrollWidth - sliderTrack.clientWidth);
+    const targetScroll = Math.min(offset, maxScroll);
+
     sliderTrack.scrollTo({
-      left: offset,
+      left: targetScroll,
       behavior: 'smooth'
     });
+
+    renderActiveState(safeIndex);
+  };
+
+  const advanceSlider = (direction = 1) => {
+    if (!sliderTrack) return;
+    const visibleCards = getVisibleCards();
+    if (!visibleCards.length) return;
+
+    let nextIndex = currentSlideIndex + direction;
+    if (nextIndex >= visibleCards.length) {
+      nextIndex = 0; // Seamless loop back to first project (01 / 06)
+    } else if (nextIndex < 0) {
+      nextIndex = visibleCards.length - 1; // Seamless loop to last project (06 / 06)
+    }
+
+    scrollToCard(nextIndex);
+  };
+
+  const startAutoplay = () => {
+    if (autoplayInterval) clearInterval(autoplayInterval);
+    autoplayInterval = setInterval(() => {
+      if (!isHovered && !isUserInteracting && document.visibilityState !== 'hidden') {
+        advanceSlider(1);
+      }
+    }, autoplayDelay);
+
+    if (autoplayBtn) {
+      autoplayBtn.classList.remove('is-paused');
+      autoplayBtn.setAttribute('aria-label', 'Pause Auto Slider');
+      autoplayBtn.setAttribute('title', 'Pause Auto Slider');
+      const icon = autoplayBtn.querySelector('i');
+      if (icon) icon.className = 'fa-solid fa-pause';
+    }
+  };
+
+  const stopAutoplay = () => {
+    if (autoplayInterval) {
+      clearInterval(autoplayInterval);
+      autoplayInterval = null;
+    }
+    if (autoplayBtn) {
+      autoplayBtn.classList.add('is-paused');
+      autoplayBtn.setAttribute('aria-label', 'Play Auto Slider');
+      autoplayBtn.setAttribute('title', 'Play Auto Slider');
+      const icon = autoplayBtn.querySelector('i');
+      if (icon) icon.className = 'fa-solid fa-play';
+    }
+  };
+
+  const toggleAutoplay = () => {
+    isAutoplay = !isAutoplay;
+    if (isAutoplay) {
+      startAutoplay();
+    } else {
+      stopAutoplay();
+    }
+  };
+
+  const restartAutoplayTimer = () => {
+    if (!isAutoplay) return;
+    if (resumeTimer) clearTimeout(resumeTimer);
+    if (autoplayInterval) clearInterval(autoplayInterval);
+    resumeTimer = setTimeout(() => {
+      startAutoplay();
+    }, 1200);
   };
 
   if (sliderTrack) {
@@ -890,33 +1009,58 @@ document.addEventListener('DOMContentLoaded', () => {
     let scrollLeft = 0;
     let isDragging = false;
 
+    // Autoplay Toggle Button
+    if (autoplayBtn) {
+      autoplayBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleAutoplay();
+      });
+    }
+
     // Arrow Prev
     if (prevBtn) {
-      prevBtn.addEventListener('click', () => {
-        const visibleCards = getVisibleCards();
-        if (!visibleCards.length) return;
-        const cardWidth = visibleCards[0].offsetWidth;
-        const gap = parseFloat(getComputedStyle(sliderTrack).gap) || 28;
-        sliderTrack.scrollBy({ left: -(cardWidth + gap), behavior: 'smooth' });
+      prevBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        advanceSlider(-1);
+        restartAutoplayTimer();
       });
     }
 
     // Arrow Next
     if (nextBtn) {
-      nextBtn.addEventListener('click', () => {
-        const visibleCards = getVisibleCards();
-        if (!visibleCards.length) return;
-        const cardWidth = visibleCards[0].offsetWidth;
-        const gap = parseFloat(getComputedStyle(sliderTrack).gap) || 28;
-        sliderTrack.scrollBy({ left: cardWidth + gap, behavior: 'smooth' });
+      nextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        advanceSlider(1);
+        restartAutoplayTimer();
       });
     }
+
+    // Mouse Wheel Horizontal Scroll
+    sliderTrack.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; // Already horizontal
+      e.preventDefault();
+      sliderTrack.scrollLeft += e.deltaY * 0.85;
+      isUserInteracting = true;
+      restartAutoplayTimer();
+      setTimeout(() => { isUserInteracting = false; }, 800);
+    }, { passive: false });
+
+    // Hover Pausing
+    sliderTrack.addEventListener('mouseenter', () => {
+      isHovered = true;
+    });
+
+    sliderTrack.addEventListener('mouseleave', () => {
+      isHovered = false;
+      restartAutoplayTimer();
+    });
 
     // Mouse Drag Scroll for desktop
     sliderTrack.addEventListener('mousedown', (e) => {
       if (e.target.closest('a, button')) return;
       isDown = true;
       isDragging = false;
+      isUserInteracting = true;
       sliderTrack.classList.add('is-dragging');
       startX = e.pageX - sliderTrack.offsetLeft;
       scrollLeft = sliderTrack.scrollLeft;
@@ -929,7 +1073,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     sliderTrack.addEventListener('mouseup', () => {
       isDown = false;
+      isUserInteracting = false;
       sliderTrack.classList.remove('is-dragging');
+      restartAutoplayTimer();
     });
 
     sliderTrack.addEventListener('mousemove', (e) => {
@@ -951,12 +1097,54 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }, true);
 
+    // Touch events for mobile
+    sliderTrack.addEventListener('touchstart', () => {
+      isUserInteracting = true;
+    }, { passive: true });
+
+    sliderTrack.addEventListener('touchend', () => {
+      isUserInteracting = false;
+      restartAutoplayTimer();
+    }, { passive: true });
+
     // Scroll listener with requestAnimationFrame throttle
     let scrollRaf = 0;
     sliderTrack.addEventListener('scroll', () => {
       if (scrollRaf) cancelAnimationFrame(scrollRaf);
       scrollRaf = requestAnimationFrame(updateSliderUI);
     }, { passive: true });
+
+    // IntersectionObserver to only autoplay when in view
+    const projectsSection = document.getElementById('projects');
+    if (projectsSection && 'IntersectionObserver' in window) {
+      const projObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            if (isAutoplay && !autoplayInterval) startAutoplay();
+          } else {
+            if (autoplayInterval) {
+              clearInterval(autoplayInterval);
+              autoplayInterval = null;
+            }
+          }
+        });
+      }, { threshold: 0.15 });
+      projObserver.observe(projectsSection);
+    } else {
+      startAutoplay();
+    }
+
+    // Visibility change (pause when tab hidden)
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        if (autoplayInterval) {
+          clearInterval(autoplayInterval);
+          autoplayInterval = null;
+        }
+      } else if (isAutoplay) {
+        startAutoplay();
+      }
+    });
 
     // Build initial dots and UI
     buildDots();
@@ -965,35 +1153,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Expose refresh function
     window.refreshProjectsSlider = () => {
+      currentSlideIndex = 0;
       sliderTrack.scrollTo({ left: 0, behavior: 'smooth' });
       setTimeout(buildDots, 260);
+      restartAutoplayTimer();
     };
   }
 
-  // Filter Buttons
+  // Filter Buttons for Featured Projects (ScrollStack & Grid)
   filterBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       filterBtns.forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
 
       const filterValue = btn.getAttribute('data-filter');
+      const allProjectCards = document.querySelectorAll('.scroll-stack-card, .project-card');
 
-      projectCards.forEach((card) => {
+      allProjectCards.forEach((card) => {
         const category = card.getAttribute('data-category');
         if (filterValue === 'all' || category === filterValue) {
-          card.style.display = 'flex';
-          setTimeout(() => {
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-          }, 50);
+          card.style.display = '';
+          card.style.opacity = '1';
         } else {
+          card.style.display = 'none';
           card.style.opacity = '0';
-          card.style.transform = 'translateY(20px)';
-          setTimeout(() => {
-            card.style.display = 'none';
-          }, 220);
         }
       });
+
+      if (typeof window.updateAllScrollStacks === 'function') {
+        window.updateAllScrollStacks();
+      }
 
       if (typeof window.refreshProjectsSlider === 'function') {
         window.refreshProjectsSlider();
