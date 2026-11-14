@@ -211,7 +211,7 @@
     }
   };
 
-  const NARROW = 560;
+  const NARROW = 768;
   const EASE_OUT = 'cubic-bezier(0.22, 1, 0.36, 1)';
 
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));

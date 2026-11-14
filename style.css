@@ -219,8 +219,11 @@ body.light-theme[data-template="cyan"],
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
   font-size: 16px;
   text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: clip;
 }
 
 body {
@@ -229,9 +232,12 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: clip;
+  width: 100%;
+  max-width: 100vw;
   transition: background-color var(--transition-slow), color var(--transition-slow);
   position: relative;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 ::selection {
@@ -553,20 +559,22 @@ body.light-theme .ambient-glow {
   left: 0;
   right: 0;
   z-index: 1000;
-  padding: 1rem 0;
+  padding: max(0.85rem, env(safe-area-inset-top, 0.85rem)) 0 0.85rem;
   pointer-events: none;
   background: transparent;
   transition: padding var(--transition-normal);
 }
 
 .navbar.scrolled {
-  padding: 0.65rem 0;
+  padding: max(0.55rem, env(safe-area-inset-top, 0.55rem)) 0 0.55rem;
 }
 
 .navbar-container {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 1.5rem;
+  padding-left: max(1.25rem, env(safe-area-inset-left, 1.25rem));
+  padding-right: max(1.25rem, env(safe-area-inset-right, 1.25rem));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -976,7 +984,7 @@ body.dark-theme .dark-icon { display: none; }
 .section {
   padding: 6.5rem 0;
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 .section-container {
@@ -1211,24 +1219,28 @@ body.dark-theme .dark-icon { display: none; }
   position: relative;
   overflow: hidden;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
-  padding-top: 7rem;
-  padding-bottom: 4rem;
+  padding-top: max(6.5rem, calc(4.5rem + env(safe-area-inset-top, 0px)));
+  padding-bottom: 3.5rem;
 }
 
-/* SwarmCursor Fluid Simulation Container */
+/* SwarmCursor Fluid Simulation Container (Page-wide Fullscreen Viewport Layer) */
+.global-swarm-container,
+.global-swarm-container.swarm-cursor,
 .hero-swarm-container,
 .hero-swarm-container.swarm-cursor {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   pointer-events: none;
   z-index: 1;
   overflow: hidden;
 }
 
+.global-swarm-container .swarm-cursor-canvas,
 .hero-swarm-container .swarm-cursor-canvas {
   position: absolute;
   inset: 0;
@@ -1247,11 +1259,12 @@ body.dark-theme .dark-icon { display: none; }
 }
 
 .hero-headline {
-  font-size: clamp(3.2rem, 7vw, 6.2rem);
+  font-size: clamp(2.3rem, 7vw, 6.2rem);
   font-weight: 900;
   line-height: 0.95;
   letter-spacing: -0.04em;
   margin-bottom: 1.5rem;
+  word-break: break-word;
 }
 
 .hero-title-top {
@@ -1380,6 +1393,9 @@ body.dark-theme .dark-icon { display: none; }
 /* Hero Right: Orbital Planetary Tech System */
 .hero-visual {
   position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1661,30 +1677,78 @@ body.dark-theme .dark-icon { display: none; }
 
 /* Responsive Scaling for Orbit System */
 @media (max-width: 1200px) {
+  .hero-visual {
+    min-height: 480px;
+  }
   .orbit-system {
-    transform: scale(0.9);
+    width: 480px;
+    height: 480px;
+    transform: scale(0.88);
   }
 }
 
 @media (max-width: 992px) {
+  .hero-visual {
+    min-height: 440px;
+    margin: 1.5rem auto 0;
+  }
   .orbit-system {
-    transform: scale(0.85);
-    margin: 2rem auto;
+    width: 440px;
+    height: 440px;
+    transform: scale(0.8);
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-visual {
+    min-height: 400px;
+  }
+  .orbit-system {
+    width: 400px;
+    height: 400px;
+    transform: scale(0.72);
+    transform-origin: center center;
+    margin: 0 auto;
   }
 }
 
 @media (max-width: 640px) {
+  .hero-visual {
+    min-height: 350px;
+  }
   .orbit-system {
-    transform: scale(0.66);
+    width: 350px;
+    height: 350px;
+    transform: scale(0.64);
     transform-origin: center center;
-    margin: 1rem auto;
+    margin: 0 auto;
   }
 }
 
 @media (max-width: 440px) {
+  .hero-visual {
+    min-height: 300px;
+  }
   .orbit-system {
-    transform: scale(0.55);
+    width: 300px;
+    height: 300px;
+    transform: scale(0.54);
     transform-origin: center center;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 360px) {
+  .hero-visual {
+    min-height: 260px;
+  }
+  .orbit-system {
+    width: 260px;
+    height: 260px;
+    transform: scale(0.46);
+    transform-origin: center center;
+    margin: 0 auto;
   }
 }
 
@@ -3324,17 +3388,38 @@ body.light-theme .orbit-center-name {
 /* ==========================================================================
    RESPONSIVE DESIGN BREAKPOINTS
    ========================================================================== */
+/* ==========================================================================
+   RESPONSIVE DESIGN BREAKPOINTS & DEVICE ADAPTATIONS
+   Supports Large Desktops, Laptops, Tablets (Landscape/Portrait),
+   Mobile Phablets, Standard Phones, and Ultra-compact Mobile (320px)
+   ========================================================================== */
+
+/* --- 1. Laptops & Small Desktops (<= 1200px) --- */
 @media (max-width: 1200px) {
   .education-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 1.8rem;
+  }
+  .skills-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
   }
 }
 
+/* --- 2. Tablets in Landscape & Smaller Laptops (<= 1024px) --- */
 @media (max-width: 1024px) {
+  .section {
+    padding: 5rem 0;
+  }
+  .hero-section {
+    min-height: auto;
+    padding-top: max(6rem, calc(4.5rem + env(safe-area-inset-top, 0px)));
+    padding-bottom: 3.5rem;
+  }
   .hero-grid {
     grid-template-columns: 1fr;
     text-align: center;
-    gap: 3rem;
+    gap: 2.5rem;
   }
   .hero-headline {
     margin-left: auto;
@@ -3344,64 +3429,397 @@ body.light-theme .orbit-center-name {
     margin-left: auto;
     margin-right: auto;
   }
-  .social-circles-row, .hero-cta-group {
+  .social-circles-row,
+  .hero-cta-group {
     justify-content: center;
   }
   .about-grid {
     grid-template-columns: 1fr;
     gap: 3rem;
   }
-  .skills-cards-grid {
-    grid-template-columns: 1fr;
-  }
-  .projects-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
   .contact-grid {
     grid-template-columns: 1fr;
+    gap: 2.5rem;
   }
   .guestbook-container {
     grid-template-columns: 1fr;
+    gap: 2rem;
   }
 }
 
+/* --- 3. Tablets in Portrait & Large Mobile (<= 768px) --- */
 @media (max-width: 768px) {
+  .section {
+    padding: 4.25rem 0;
+  }
+  .section-header {
+    margin-bottom: 2.5rem;
+  }
+  .section-container {
+    padding: 0 1.25rem;
+  }
   .nav-links {
     display: none;
   }
   .mobile-only {
     display: flex;
   }
-  .projects-grid {
+  .skills-cards-grid {
     grid-template-columns: 1fr;
+  }
+  .skill-category-card {
+    padding: 1.75rem 1.4rem;
   }
   .education-grid {
     grid-template-columns: 1fr;
-    max-width: 460px;
+    max-width: 480px;
     margin: 0 auto;
+    gap: 1.5rem;
   }
   .about-highlights-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
   }
   .form-row {
     flex-direction: column;
     gap: 0;
   }
+  .timeline-container {
+    padding: 1rem 0;
+  }
   .timeline-central-line {
     left: 20px;
   }
-  .timeline-item.left-item, .timeline-item.right-item {
-    padding-left: 55px;
+  .timeline-item.left-item,
+  .timeline-item.right-item {
+    padding-left: 54px;
     padding-right: 0;
     justify-content: flex-start;
+    margin-bottom: 2.5rem;
   }
   .timeline-marker {
     left: 20px;
   }
-  .footer-top-row, .footer-bottom-row {
+  .timeline-card {
+    padding: 1.5rem 1.25rem;
+  }
+  .contact-form-card {
+    padding: 1.8rem 1.5rem;
+  }
+  .footer-top-row,
+  .footer-bottom-row {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    gap: 1.25rem;
+  }
+}
+
+/* --- 4. Standard Mobile Screens (<= 640px) --- */
+@media (max-width: 640px) {
+  .section {
+    padding: 3.75rem 0;
+  }
+  .section-title {
+    font-size: clamp(1.85rem, 6.5vw, 2.6rem);
+  }
+  .orb-1 {
+    width: 260px;
+    height: 260px;
+    filter: blur(60px);
+  }
+  .orb-2 {
+    width: 280px;
+    height: 280px;
+    filter: blur(70px);
+  }
+  .orb-3 {
+    width: 220px;
+    height: 220px;
+    filter: blur(50px);
+  }
+  .section-subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+  .hero-tagline {
+    font-size: 1.05rem;
+  }
+  .hero-bio {
+    font-size: 0.96rem;
+  }
+  .hero-cta-group {
+    gap: 0.85rem;
+  }
+  .social-circles-row {
+    gap: 0.75rem;
+  }
+  .social-circle {
+    width: 42px;
+    height: 42px;
+    font-size: 1.05rem;
+  }
+  .floating-quickdock {
+    right: max(0.85rem, env(safe-area-inset-right, 0.85rem));
+    bottom: max(1rem, env(safe-area-inset-bottom, 1rem));
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+  .scroll-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 0.85rem;
+  }
+  .modal-backdrop {
+    padding: 0.75rem;
+  }
+  .modal-window {
+    max-height: 94vh;
+  }
+  .modal-header {
+    padding: 1rem 1.25rem;
+  }
+  .modal-content {
+    padding: 0.85rem;
+  }
+  .guestbook-form-card,
+  .guestbook-feed-card {
+    padding: 1.5rem 1.2rem;
+  }
+  .comments-stream {
+    max-height: 320px;
+  }
+}
+
+/* --- 5. Small Mobile Phones (<= 480px) --- */
+@media (max-width: 480px) {
+  .section {
+    padding: 3.25rem 0;
+  }
+  .section-container {
+    padding: 0 1rem;
+  }
+  .section-header {
+    margin-bottom: 2rem;
+  }
+  .hero-section {
+    padding-top: max(5.5rem, calc(4rem + env(safe-area-inset-top, 0px)));
+    padding-bottom: 2.5rem;
+  }
+  .hero-headline {
+    font-size: clamp(2rem, 8vw, 3.2rem);
+    margin-bottom: 1rem;
+  }
+  .typed-role {
+    font-size: 1.05rem;
+    min-height: 1.8rem;
+    margin-bottom: 1rem;
+  }
+  .greeting-badge {
+    padding: 0.35rem 0.85rem;
+    font-size: 0.82rem;
+  }
+  .hero-cta-group {
+    flex-direction: column;
+    width: 100%;
+  }
+  .hero-cta-group .btn {
+    width: 100%;
+    padding: 0.85rem 1.4rem;
+  }
+  .lanyard-wrapper {
+    height: 380px;
+    max-width: 100%;
+    width: 100%;
+  }
+  .timeline-central-line {
+    left: 14px;
+  }
+  .timeline-marker {
+    left: 14px;
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
+  .timeline-item.left-item,
+  .timeline-item.right-item {
+    padding-left: 42px;
+    margin-bottom: 2rem;
+  }
+  .timeline-card {
+    padding: 1.25rem 1rem;
+  }
+  .timeline-role {
+    font-size: 1.15rem;
+  }
+  .timeline-company {
+    font-size: 0.9rem;
+  }
+  .timeline-desc {
+    font-size: 0.88rem;
+  }
+  .timeline-tags span {
+    font-size: 0.72rem;
+    padding: 0.2rem 0.55rem;
+  }
+  .projects-controls-bar {
+    gap: 0.85rem;
+  }
+  .projects-slider-track {
+    gap: 1rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+  .projects-slider-track .project-card {
+    flex: 0 0 92%;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .project-image-box {
+    height: 180px;
+  }
+  .project-body {
+    padding: 1.25rem 1rem;
+  }
+  .project-title {
+    font-size: 1.2rem;
+  }
+  .project-description {
+    font-size: 0.9rem;
+  }
+  .project-tags span {
+    font-size: 0.72rem;
+    padding: 0.18rem 0.55rem;
+  }
+  .btn-demo,
+  .btn-github {
+    font-size: 0.82rem;
+    padding: 0.55rem 0.95rem;
+  }
+  .contact-form-card {
+    padding: 1.35rem 1rem;
+  }
+  .form-title {
+    font-size: 1.2rem;
+    margin-bottom: 1.25rem;
+  }
+  .form-group input,
+  .form-group textarea {
+    padding: 0.75rem 0.85rem;
+    font-size: 1rem; /* Prevents auto-zoom in iOS Safari */
+  }
+  .contact-card {
+    padding: 1.15rem 1rem;
+    gap: 0.85rem;
+  }
+  .contact-icon-box {
+    width: 44px;
+    height: 44px;
+    font-size: 1.15rem;
+  }
+  .contact-val {
+    font-size: 0.95rem;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .contact-desc {
+    font-size: 0.8rem;
+  }
+  .btn-heart,
+  .back-to-top-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .welcome-avatar-wrapper {
+    width: 110px;
+    height: 110px;
+    margin-bottom: 1.25rem;
+  }
+  .welcome-title {
+    font-size: clamp(1.6rem, 7vw, 2.2rem);
+  }
+  .welcome-subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 1.75rem;
+  }
+  .btn-enter {
+    padding: 0.85rem 1.8rem;
+    font-size: 0.95rem;
+    width: 100%;
+    max-width: 260px;
+    justify-content: center;
+  }
+}
+
+/* --- 6. Ultra-Compact Mobile Screens (<= 360px) --- */
+@media (max-width: 360px) {
+  .section-container {
+    padding: 0 0.75rem;
+  }
+  .hero-headline {
+    font-size: 1.95rem;
+  }
+  .typed-role {
+    font-size: 0.95rem;
+  }
+  .hero-tagline {
+    font-size: 0.95rem;
+  }
+  .lanyard-wrapper {
+    height: 330px;
+  }
+  .timeline-item.left-item,
+  .timeline-item.right-item {
+    padding-left: 36px;
+  }
+  .timeline-central-line {
+    left: 10px;
+  }
+  .timeline-marker {
+    left: 10px;
+    width: 28px;
+    height: 28px;
+    font-size: 0.72rem;
+  }
+  .timeline-card {
+    padding: 1rem 0.85rem;
+  }
+  .project-body {
+    padding: 1rem 0.85rem;
+  }
+  .skill-category-card {
+    padding: 1.25rem 0.85rem;
+  }
+}
+
+/* --- 7. Mobile Landscape Short Viewport Adaptations --- */
+@media (max-height: 520px) and (orientation: landscape) {
+  .welcome-container {
+    padding: 1rem;
+  }
+  .welcome-avatar-wrapper {
+    width: 72px;
+    height: 72px;
+    margin-bottom: 0.75rem;
+  }
+  .welcome-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.35rem;
+  }
+  .welcome-subtitle {
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+  .btn-enter {
+    padding: 0.65rem 1.5rem;
+    font-size: 0.9rem;
+  }
+  .hero-section {
+    padding-top: 4.5rem;
+    padding-bottom: 2rem;
+    min-height: auto;
   }
 }
 

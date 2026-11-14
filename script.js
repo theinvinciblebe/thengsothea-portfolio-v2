@@ -543,16 +543,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ==========================================================================
      2d. SWARMCURSOR FLUID SIMULATION (REACT BITS)
-     Hardware-accelerated WebGL2 particle swarm cursor flowing behind Hero section
+     Hardware-accelerated WebGL2 particle swarm cursor flowing across the page
      ========================================================================== */
-  const heroSwarmContainer = document.getElementById('hero-swarm-container');
-  if (heroSwarmContainer && typeof initSwarmCursor === 'function') {
+  const swarmContainer = document.getElementById('global-swarm-container') || document.getElementById('hero-swarm-container');
+  if (swarmContainer && typeof initSwarmCursor === 'function') {
     const isPageCyan = window.location.pathname.includes('template-cyan') || (document.documentElement.getAttribute('data-template') === 'cyan' && !window.location.pathname.includes('template-forest'));
     const curTemplate = isPageCyan ? 'cyan' : (localStorage.getItem('sothea_portfolio_template') || document.documentElement.getAttribute('data-template') || 'forest');
     const isCyan = curTemplate === 'cyan';
     const isLight = document.body.classList.contains('light-theme') || (localStorage.getItem('sothea_portfolio_theme') === 'light');
 
-    window.swarmCursorInstance = initSwarmCursor(heroSwarmContainer, {
+    window.swarmCursorInstance = initSwarmCursor(swarmContainer, {
       count: 800,
       size: 2.6,
       spread: 90,
@@ -563,7 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
       wander: 0.5,
       depth: 0.7,
       targets: 'a, button, [data-swarm-target]',
-      targetScope: '#home',
+      targetScope: 'body',
       idle: 'roam',
       clickEffect: 'burst',
       hideCursor: false,

@@ -624,7 +624,7 @@ void main() {
       if (!element) return null;
       const scope = s.targetScope
         ? (typeof s.targetScope === 'string' ? document.querySelector(s.targetScope) : s.targetScope)
-        : ((container.closest && container.closest('.hero-section, .section')) || container);
+        : ((container.closest && container.closest('.hero-section, .section')) || document.body);
       if (!scope || !scope.contains(element)) return null;
       let match = null;
       try {
@@ -904,10 +904,15 @@ void main() {
     });
     intersection.observe(container);
 
+    const onScroll = () => {
+      if (pointer.inside) wake();
+    };
+
     window.addEventListener('pointermove', onPointerMove, { passive: true });
     window.addEventListener('pointerdown', onPointerDown, { passive: true });
     window.addEventListener('pointerup', onPointerUp, { passive: true });
     window.addEventListener('pointercancel', onPointerUp, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
     document.documentElement.addEventListener('pointerleave', onPointerLeave);
     document.addEventListener('visibilitychange', onVisibility);
 
@@ -942,6 +947,7 @@ void main() {
         window.removeEventListener('pointerdown', onPointerDown);
         window.removeEventListener('pointerup', onPointerUp);
         window.removeEventListener('pointercancel', onPointerUp);
+        window.removeEventListener('scroll', onScroll);
         document.documentElement.removeEventListener('pointerleave', onPointerLeave);
         document.removeEventListener('visibilitychange', onVisibility);
         gl.deleteBuffer(cornerBuffer);

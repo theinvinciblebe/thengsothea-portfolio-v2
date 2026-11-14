@@ -302,3 +302,42 @@
 .education-reflective-card:hover .reflective-card__tile svg {
   transform: scale(1.1);
 }
+
+@media (max-width: 640px) {
+  .education-reflective-card {
+    min-height: 380px;
+  }
+  .reflective-card__content {
+    padding: 1.4rem 1.25rem;
+  }
+  .reflective-card__name {
+    font-size: 1.35rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .education-reflective-card {
+    min-height: 350px;
+  }
+  .reflective-card__content {
+    padding: 1.15rem 0.95rem;
+  }
+  .reflective-card__header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .education-reflective-card .reflective-card__status {
+    margin-left: 0;
+  }
+  .reflective-card__name {
+    font-size: 1.22rem;
+  }
+  .reflective-card__role {
+    font-size: 13px;
+    line-height: 1.45;
+  }
+  .reflective-card__footer {
+    margin-top: 1rem;
+    padding-top: 0.85rem;
+  }
+}
