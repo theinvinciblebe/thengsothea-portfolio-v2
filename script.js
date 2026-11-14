@@ -389,11 +389,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }, {
     root: null,
-    threshold: 0.12,
+    threshold: 0.08,
     rootMargin: '0px 0px -40px 0px'
   });
 
   function triggerScrollReveals() {
+    // Automatically apply CardNav mathematical stagger (delay: index * 95ms) to sibling cards in every section
+    const gridContainers = document.querySelectorAll(
+      '.hero-grid, .about-grid, .about-content-column, .skills-grid, .timeline-container, .projects-slider-track, .education-grid, .guestbook-container, .contact-grid'
+    );
+    gridContainers.forEach((container) => {
+      const items = container.querySelectorAll('.reveal-on-scroll');
+      items.forEach((item, idx) => {
+        if (!item.style.getPropertyValue('--reveal-delay')) {
+          item.style.setProperty('--reveal-delay', `${idx * 95}ms`);
+        }
+      });
+    });
+
     revealElements.forEach((el) => {
       revealObserver.observe(el);
     });
@@ -439,6 +452,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.topographyInstance && typeof window.topographyInstance.pause === 'function') {
       window.topographyInstance.pause();
     }
+    // Trigger CardNav entrance unroll animation right as welcome overlay starts fading
+    setTimeout(() => {
+      if (window.cardNavInstance && typeof window.cardNavInstance.playIntro === 'function') {
+        window.cardNavInstance.playIntro();
+      }
+    }, 280);
     setTimeout(() => {
       welcomeOverlay.style.display = 'none';
       triggerScrollReveals();
@@ -455,6 +474,11 @@ document.addEventListener('DOMContentLoaded', () => {
       welcomeOverlay.style.display = 'none';
       triggerScrollReveals();
     }
+    setTimeout(() => {
+      if (window.cardNavInstance && typeof window.cardNavInstance.playIntro === 'function') {
+        window.cardNavInstance.playIntro();
+      }
+    }, 120);
   }
 
   window.addEventListener('keydown', (e) => {
@@ -1160,14 +1184,14 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // Filter Buttons for Featured Projects (ScrollStack & Grid)
+  // Filter Buttons for Featured Projects Slider
   filterBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       filterBtns.forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
 
       const filterValue = btn.getAttribute('data-filter');
-      const allProjectCards = document.querySelectorAll('.scroll-stack-card, .project-card');
+      const allProjectCards = document.querySelectorAll('.project-card');
 
       allProjectCards.forEach((card) => {
         const category = card.getAttribute('data-category');
@@ -1179,10 +1203,6 @@ document.addEventListener('DOMContentLoaded', () => {
           card.style.opacity = '0';
         }
       });
-
-      if (typeof window.updateAllScrollStacks === 'function') {
-        window.updateAllScrollStacks();
-      }
 
       if (typeof window.refreshProjectsSlider === 'function') {
         window.refreshProjectsSlider();

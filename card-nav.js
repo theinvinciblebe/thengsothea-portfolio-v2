@@ -617,7 +617,8 @@
     }
 
     function refreshHeight() {
-      state.height = contentEl.offsetHeight;
+      const measured = contentEl.offsetHeight;
+      state.height = measured > 40 ? measured : (opts.cardHeight || 176) + 44;
       render();
     }
 
@@ -726,31 +727,61 @@
     measureNarrow();
     refreshHeight();
 
-    // Intro Animation
-    if (opts.intro && !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+    // Intro Animation Method
+    function playIntro() {
+      if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+
       requestAnimationFrame(() => {
-        const width = panelEl.offsetWidth;
-        const height = panelEl.offsetHeight;
+        const measuredWidth = panelEl.offsetWidth || rootEl.offsetWidth || (rootEl.parentElement ? rootEl.parentElement.offsetWidth : 0) || window.innerWidth || 800;
+        const width = Math.min(measuredWidth, opts.maxWidth || 1000);
+        const height = parseFloat(getComputedStyle(panelEl).getPropertyValue('--cn-bar')) || panelEl.offsetHeight || 60;
         const radius = parseFloat(getComputedStyle(panelEl).borderTopLeftRadius) || 18;
+        const insetX = Math.max(0, (width - height) / 2);
+
         if (typeof panelEl.animate === 'function') {
           panelEl.animate(
             [
-              { clipPath: `inset(0px ${Math.max(0, (width - height) / 2)}px round ${height / 2}px)`, opacity: 0 },
-              { clipPath: `inset(0px 0px round ${radius}px)`, opacity: 1 }
+              {
+                clipPath: `inset(0px ${insetX}px round ${height / 2}px)`,
+                opacity: 0,
+                transform: 'scale(0.96)'
+              },
+              {
+                clipPath: `inset(0px 0px round ${radius}px)`,
+                opacity: 1,
+                transform: 'scale(1)'
+              }
             ],
-            { duration: 820, easing: EASE_OUT, fill: 'backwards' }
+            {
+              duration: 850,
+              easing: EASE_OUT,
+              fill: 'both'
+            }
           );
+
           Array.from(barEl.children).forEach((child, index) => {
             child.animate(
               [
-                { opacity: 0, transform: 'translateY(8px)' },
-                { opacity: 1, transform: 'translateY(0)' }
+                { opacity: 0, transform: 'translateY(12px) scale(0.95)' },
+                { opacity: 1, transform: 'translateY(0px) scale(1)' }
               ],
-              { duration: 560, delay: 220 + index * 70, easing: EASE_OUT, fill: 'backwards' }
+              {
+                duration: 560,
+                delay: 200 + index * 75,
+                easing: EASE_OUT,
+                fill: 'both'
+              }
             );
           });
         }
       });
+    }
+
+    const welcomeEl = document.getElementById('welcome-overlay');
+    const isWelcomeActive = welcomeEl && welcomeEl.style.display !== 'none' && !welcomeEl.classList.contains('fade-out');
+
+    if (opts.intro && !isWelcomeActive) {
+      playIntro();
     }
 
     // Return Public Controller Instance
@@ -758,6 +789,13 @@
       el: rootEl,
       panel: panelEl,
       content: contentEl,
+
+      /**
+       * Trigger the signature React Bits unroll entrance animation
+       */
+      playIntro() {
+        playIntro();
+      },
 
       /**
        * Get or set open state

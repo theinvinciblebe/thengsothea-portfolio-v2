@@ -51,7 +51,6 @@
   <link rel="stylesheet" href="GyroscopeCursor.css" />
   <link rel="stylesheet" href="CardNav.css" />
   <link rel="stylesheet" href="ReflectiveCard.css" />
-  <link rel="stylesheet" href="ScrollStack.css" />
 
   <!-- Import map for Three.js module environments -->
   <script type="importmap">
@@ -778,19 +777,23 @@
           <div class="project-filters">
             <button class="filter-btn active" data-filter="all" data-i18n="projects.filterAll">All Projects</button>
             <button class="filter-btn" data-filter="web" data-i18n="projects.filterWeb">Web &amp; Full-Stack</button>
-            <button class="filter-btn" data-filter="systems" data-i18n="projects.filterSystems">Systems &amp; Software</button>
+            <button class="filter-btn" data-filter="systems" data-i18n="projects.filterSystems">Systems &amp;
+              Software</button>
           </div>
 
           <!-- Slider Controls (AutoPlay, Arrows & Live Counter) -->
           <div class="projects-slider-controls" aria-label="Projects slider navigation">
-            <button class="slider-arrow-btn slider-autoplay" id="projects-autoplay-btn" aria-label="Pause Auto Slider" title="Toggle Auto-Slide" type="button">
+            <button class="slider-arrow-btn slider-autoplay" id="projects-autoplay-btn" aria-label="Pause Auto Slider"
+              title="Toggle Auto-Slide" type="button">
               <i class="fa-solid fa-pause" aria-hidden="true"></i>
             </button>
-            <button class="slider-arrow-btn slider-prev" id="projects-prev-btn" aria-label="Previous Project" title="Previous Slide" type="button">
+            <button class="slider-arrow-btn slider-prev" id="projects-prev-btn" aria-label="Previous Project"
+              title="Previous Slide" type="button">
               <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
             </button>
             <span class="slider-counter" id="projects-slider-counter" aria-live="polite">01 / 06</span>
-            <button class="slider-arrow-btn slider-next" id="projects-next-btn" aria-label="Next Project" title="Next Slide" type="button">
+            <button class="slider-arrow-btn slider-next" id="projects-next-btn" aria-label="Next Project"
+              title="Next Slide" type="button">
               <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
             </button>
           </div>
@@ -824,7 +827,8 @@
                 <div class="project-links">
                   <a href="https://businesscambodia-website-news-clone.vercel.app/" target="_blank"
                     rel="noopener noreferrer" class="btn-demo">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live Demo</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live
+                      Demo</span>
                   </a>
                   <a href="https://github.com/theinvinciblebe/businesscambodia-website-news-clone" target="_blank"
                     rel="noopener noreferrer" class="btn-github" aria-label="GitHub Repository"
@@ -861,7 +865,8 @@
                 <div class="project-links">
                   <a href="https://school-management-system-eta-gray.vercel.app/" target="_blank"
                     rel="noopener noreferrer" class="btn-demo">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live Demo</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live
+                      Demo</span>
                   </a>
                   <a href="https://github.com/theinvinciblebe/School-Management-System" target="_blank"
                     rel="noopener noreferrer" class="btn-github" aria-label="GitHub Repository"
@@ -898,7 +903,8 @@
                 <div class="project-links">
                   <a href="https://cms-gaming-product-3nhu.vercel.app/" target="_blank" rel="noopener noreferrer"
                     class="btn-demo">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live Demo</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live
+                      Demo</span>
                   </a>
                   <a href="https://github.com/theinvinciblebe/CMS-Gaming-Product" target="_blank"
                     rel="noopener noreferrer" class="btn-github" aria-label="GitHub Repository"
@@ -1003,7 +1009,8 @@
                 <div class="project-links">
                   <a href="https://depreciationssystem.vercel.app/" target="_blank" rel="noopener noreferrer"
                     class="btn-demo">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live Demo</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="projects.liveDemo">Live
+                      Demo</span>
                   </a>
                   <a href="https://github.com/theinvinciblebe/Depreciation-System" target="_blank"
                     rel="noopener noreferrer" class="btn-github" aria-label="GitHub Repository"
@@ -1039,17 +1046,9 @@
 
         <div class="education-grid">
           <!-- Edu 1: SETEC Institute (ReflectiveCard) -->
-          <div class="reflective-card education-reflective-card reveal-on-scroll"
-               data-theme="auto"
-               data-tint="#ffffff"
-               data-metalness="0.96"
-               data-roughness="0.28"
-               data-blur="6"
-               data-shine="1.15"
-               data-glare="0.55"
-               data-tilt="true"
-               data-tilt-strength="12"
-               data-radius="22">
+          <div class="reflective-card education-reflective-card reveal-on-scroll" data-theme="auto" data-tint="#ffffff"
+            data-metalness="0.96" data-roughness="0.28" data-blur="6" data-shine="1.15" data-glare="0.55"
+            data-tilt="true" data-tilt-strength="12" data-radius="22">
             <div class="reflective-card__body">
               <canvas class="reflective-card__canvas" aria-hidden="true"></canvas>
               <div class="reflective-card__content">
@@ -1070,7 +1069,8 @@
                   </span>
                   <h3 class="reflective-card__name" data-i18n="edu1.degree">Bachelor of MIS</h3>
                   <p class="reflective-card__role" data-i18n="edu1.desc">
-                    Comprehensive studies in database management (PostgreSQL/MySQL), web architecture, ERP systems, and modern software design.
+                    Comprehensive studies in database management (PostgreSQL/MySQL), web architecture, ERP systems, and
+                    modern software design.
                   </p>
                 </div>
                 <div class="reflective-card__footer">
@@ -1079,13 +1079,14 @@
                     <span class="reflective-card__value">SETEC-MIS-2026-8901</span>
                   </div>
                   <span class="reflective-card__tile" title="Academic Seal">
-                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/>
-                      <path d="M14 13.12c0 2.38 0 6.38-1 8.88"/>
-                      <path d="M2 12a10 10 0 0 1 18-6"/>
-                      <path d="M9 6.8a6 6 0 0 1 9 5.2"/>
-                      <path d="M6 13a6 6 0 0 0 3.5 5.5"/>
-                      <path d="M18 16c-.5 2-1.5 4-3 5"/>
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.6" fill="none"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4" />
+                      <path d="M14 13.12c0 2.38 0 6.38-1 8.88" />
+                      <path d="M2 12a10 10 0 0 1 18-6" />
+                      <path d="M9 6.8a6 6 0 0 1 9 5.2" />
+                      <path d="M6 13a6 6 0 0 0 3.5 5.5" />
+                      <path d="M18 16c-.5 2-1.5 4-3 5" />
                     </svg>
                   </span>
                 </div>
@@ -1095,17 +1096,9 @@
           </div>
 
           <!-- Edu 2: Hun Sen Steong Trang High School (ReflectiveCard) -->
-          <div class="reflective-card education-reflective-card reveal-on-scroll delay-1"
-               data-theme="auto"
-               data-tint="#ffffff"
-               data-metalness="0.96"
-               data-roughness="0.28"
-               data-blur="6"
-               data-shine="1.15"
-               data-glare="0.55"
-               data-tilt="true"
-               data-tilt-strength="12"
-               data-radius="22">
+          <div class="reflective-card education-reflective-card reveal-on-scroll delay-1" data-theme="auto"
+            data-tint="#ffffff" data-metalness="0.96" data-roughness="0.28" data-blur="6" data-shine="1.15"
+            data-glare="0.55" data-tilt="true" data-tilt-strength="12" data-radius="22">
             <div class="reflective-card__body">
               <canvas class="reflective-card__canvas" aria-hidden="true"></canvas>
               <div class="reflective-card__content">
@@ -1126,7 +1119,8 @@
                   </span>
                   <h3 class="reflective-card__name" data-i18n="edu2.degree">High School Diploma (BACII)</h3>
                   <p class="reflective-card__role" data-i18n="edu2.desc">
-                    Completed upper secondary national examinations with strong foundational knowledge in sciences and mathematics.
+                    Completed upper secondary national examinations with strong foundational knowledge in sciences and
+                    mathematics.
                   </p>
                 </div>
                 <div class="reflective-card__footer">
@@ -1135,13 +1129,14 @@
                     <span class="reflective-card__value">MOEYS-BACII-2019-4521</span>
                   </div>
                   <span class="reflective-card__tile" title="Academic Seal">
-                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/>
-                      <path d="M14 13.12c0 2.38 0 6.38-1 8.88"/>
-                      <path d="M2 12a10 10 0 0 1 18-6"/>
-                      <path d="M9 6.8a6 6 0 0 1 9 5.2"/>
-                      <path d="M6 13a6 6 0 0 0 3.5 5.5"/>
-                      <path d="M18 16c-.5 2-1.5 4-3 5"/>
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.6" fill="none"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4" />
+                      <path d="M14 13.12c0 2.38 0 6.38-1 8.88" />
+                      <path d="M2 12a10 10 0 0 1 18-6" />
+                      <path d="M9 6.8a6 6 0 0 1 9 5.2" />
+                      <path d="M6 13a6 6 0 0 0 3.5 5.5" />
+                      <path d="M18 16c-.5 2-1.5 4-3 5" />
                     </svg>
                   </span>
                 </div>
@@ -1510,8 +1505,6 @@
   <script src="card-nav.js"></script>
   <!-- ReflectiveCard WebGL2 Surface (React Bits) -->
   <script src="reflective-card.js"></script>
-  <!-- ScrollStack Card Stacking Engine (React Bits) -->
-  <script src="scroll-stack.js"></script>
   <!-- Main JavaScript Logic -->
   <script src="script.js"></script>
 </body>
