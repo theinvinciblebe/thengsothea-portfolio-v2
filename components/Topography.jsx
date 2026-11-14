@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import './Topography.css';
+import '../css/Topography.css';
 
 const FOV = 0.32;
 const ORBIT = 9;

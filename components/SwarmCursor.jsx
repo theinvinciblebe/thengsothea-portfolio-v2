@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import './SwarmCursor.css';
+import '../css/SwarmCursor.css';
 
 const MAX_PARTICLES = 2000;
 const INTRO_SECONDS = 1.4;

@@ -4,7 +4,7 @@ import { memo, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { CheckmarkBadge01Icon, FingerPrintIcon } from '@hugeicons/core-free-icons';
 
-import './ReflectiveCard.css';
+import '../css/ReflectiveCard.css';
 
 const THEMES = {
   dark: {

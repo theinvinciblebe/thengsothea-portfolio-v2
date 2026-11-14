@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef } from 'react';
-import './GyroscopeCursor.css';
+import '../css/GyroscopeCursor.css';
 
 /**
  * GyroscopeCursor — React Bits Pro
