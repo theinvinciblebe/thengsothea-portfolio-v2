@@ -873,29 +873,31 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     6. PROJECTS CATEGORY FILTERING & SLIDER ENGINE
+     6. PROJECTS CATEGORY FILTERING & 3D COVERFLOW PERSPECTIVE ENGINE
      ========================================================================== */
   const filterBtns = document.querySelectorAll('.filter-btn');
   const projectCards = document.querySelectorAll('.project-card');
   const sliderTrack = document.getElementById('projects-slider-track');
+  const sliderWrapper = document.getElementById('projects-slider-wrapper');
   const prevBtn = document.getElementById('projects-prev-btn');
   const nextBtn = document.getElementById('projects-next-btn');
+  const stagePrevBtn = document.getElementById('coverflow-stage-prev');
+  const stageNextBtn = document.getElementById('coverflow-stage-next');
   const autoplayBtn = document.getElementById('projects-autoplay-btn');
   const counterEl = document.getElementById('projects-slider-counter');
   const dotsContainer = document.getElementById('projects-slider-dots');
 
-  // Automation Slider State
+  // 3D Coverflow & Autoplay State
+  let currentSlideIndex = 0;
   let isAutoplay = true;
   let autoplayInterval = null;
-  const autoplayDelay = 2000; // 1s automated slide interval
+  const autoplayDelay = 3000; // 3s comfortable viewing interval
   let isHovered = false;
   let isUserInteracting = false;
   let resumeTimer = null;
-  let currentSlideIndex = 0;
-  let isProgrammaticScroll = false;
-  let programmaticTimer = null;
+  let wheelThrottleTimer = null;
 
-  // Slider State & Helper functions
+  // Retrieve visible cards respecting active category filter
   const getVisibleCards = () => {
     if (!sliderTrack) return [];
     return Array.from(sliderTrack.querySelectorAll('.project-card')).filter(
@@ -903,22 +905,18 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   };
 
+  // Synchronize Live Counter, Dots & Navigation Arrows
   const renderActiveState = (activeIndex) => {
     const visibleCards = getVisibleCards();
-    if (!visibleCards.length) return;
+    const count = visibleCards.length;
+    if (count === 0) return;
 
-    // Clamp active index
-    const safeIndex = Math.max(0, Math.min(activeIndex, visibleCards.length - 1));
+    const safeIndex = ((activeIndex % count) + count) % count;
 
     // Update Counter (e.g. 01 / 06)
     if (counterEl) {
-      counterEl.textContent = `${String(safeIndex + 1).padStart(2, '0')} / ${String(visibleCards.length).padStart(2, '0')}`;
+      counterEl.textContent = `${String(safeIndex + 1).padStart(2, '0')} / ${String(count).padStart(2, '0')}`;
     }
-
-    // Update Active Card Highlights
-    visibleCards.forEach((card, idx) => {
-      card.classList.toggle('is-active-slide', idx === safeIndex);
-    });
 
     // Update Dots
     if (dotsContainer) {
@@ -929,45 +927,111 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Update Arrow disabled state (keep active for continuous looping in autoplay mode)
-    const trackScroll = sliderTrack ? sliderTrack.scrollLeft : 0;
-    if (prevBtn) {
-      prevBtn.classList.toggle('is-disabled', !isAutoplay && safeIndex === 0 && trackScroll <= 5);
-    }
-    if (nextBtn) {
-      nextBtn.classList.toggle('is-disabled', !isAutoplay && safeIndex === visibleCards.length - 1);
-    }
+    // Keep arrow buttons active for cyclic infinite navigation
+    const isSingleCard = count <= 1;
+    [prevBtn, nextBtn, stagePrevBtn, stageNextBtn].forEach((btn) => {
+      if (btn) btn.classList.toggle('is-disabled', isSingleCard);
+    });
   };
 
-  const updateSliderUI = () => {
+  // 3D Perspective Coverflow Positioning Engine
+  const updateCoverflow = (targetIndex, animate = true) => {
     if (!sliderTrack) return;
     const visibleCards = getVisibleCards();
-    if (!visibleCards.length) return;
+    const count = visibleCards.length;
+    if (count === 0) return;
 
-    // During programmatic smooth animation, preserve currentSlideIndex
-    if (isProgrammaticScroll) return;
+    // Normalize index cyclic
+    const safeIndex = ((targetIndex % count) + count) % count;
+    currentSlideIndex = safeIndex;
 
-    const trackScroll = sliderTrack.scrollLeft;
-    const maxScroll = Math.max(0, sliderTrack.scrollWidth - sliderTrack.clientWidth);
-    const cardWidth = visibleCards[0].offsetWidth;
-    const gap = parseFloat(getComputedStyle(sliderTrack).gap) || 28;
-    const step = cardWidth + gap;
+    const stageWidth = sliderTrack.clientWidth || window.innerWidth;
+    const isMobile = stageWidth <= 640;
+    const isTablet = stageWidth <= 1024;
 
-    if (maxScroll > 0 && trackScroll >= maxScroll - 6) {
-      const maxScrollCardIndex = Math.min(Math.round(maxScroll / step), visibleCards.length - 1);
-      if (currentSlideIndex < maxScrollCardIndex) {
-        currentSlideIndex = maxScrollCardIndex;
+    // Geometry spacing: on desktop ~280px spacing creates gorgeous overlap matching reference
+    const stepX = isMobile ? Math.min(stageWidth * 0.42, 175) : (isTablet ? 230 : 285);
+    const stepZ = isMobile ? -50 : -75;
+
+    visibleCards.forEach((card, idx) => {
+      let offset = idx - currentSlideIndex;
+      if (count > 1) {
+        while (offset > count / 2) offset -= count;
+        while (offset < -count / 2) offset += count;
       }
-    } else {
-      currentSlideIndex = Math.min(
-        Math.max(0, Math.round(trackScroll / step)),
-        visibleCards.length - 1
-      );
-    }
+
+      const absOffset = Math.abs(offset);
+      let translateX = 0;
+      let translateZ = 0;
+      let rotateY = 0;
+      let scale = 1;
+      let opacity = 1;
+      let zIndex = 10;
+      let filter = 'none';
+
+      if (offset === 0) {
+        // Active Center Card: Prominent, scaled up, highest z-index, crisp shadow
+        scale = isMobile ? 1.0 : 1.02;
+        translateX = 0;
+        translateZ = 0;
+        rotateY = 0;
+        opacity = 1;
+        zIndex = 20;
+        filter = 'none';
+      } else if (absOffset === 1) {
+        // Immediate Neighbors (offset ±1): Angled inwards, stepped back behind active
+        scale = isMobile ? 0.86 : 0.88;
+        translateX = Math.sign(offset) * stepX;
+        translateZ = stepZ;
+        rotateY = Math.sign(offset) * (isMobile ? -9 : -14);
+        opacity = isMobile ? 0.72 : 0.88;
+        zIndex = 10;
+        filter = 'brightness(0.92)';
+      } else if (absOffset === 2) {
+        // Outer Neighbors (offset ±2): Further back, stepped down scale
+        scale = isMobile ? 0.72 : 0.76;
+        translateX = Math.sign(offset) * (stepX * 1.72);
+        translateZ = stepZ * 1.8;
+        rotateY = Math.sign(offset) * (isMobile ? -16 : -22);
+        opacity = isMobile ? 0.35 : 0.65;
+        zIndex = 5;
+        filter = 'brightness(0.8)';
+      } else {
+        // Hidden cards cycling behind (offset > 2)
+        scale = 0.62;
+        translateX = Math.sign(offset) * (stepX * 2.3);
+        translateZ = stepZ * 2.5;
+        rotateY = Math.sign(offset) * -26;
+        opacity = 0;
+        zIndex = 1;
+        filter = 'brightness(0.7)';
+      }
+
+      if (!animate) {
+        card.style.transition = 'none';
+      } else {
+        card.style.transition = '';
+      }
+
+      card.style.transform = `translate(-50%, -50%) translate3d(${Math.round(translateX)}px, 0px, ${Math.round(translateZ)}px) rotateY(${rotateY}deg) scale(${scale})`;
+      card.style.opacity = String(opacity);
+      card.style.zIndex = String(zIndex);
+      card.style.filter = filter;
+      card.style.visibility = opacity === 0 ? 'hidden' : 'visible';
+      card.style.pointerEvents = opacity === 0 ? 'none' : 'auto';
+
+      card.classList.toggle('is-active-slide', offset === 0);
+    });
 
     renderActiveState(currentSlideIndex);
   };
 
+  // Advance Coverflow Next (+1) or Prev (-1)
+  const advanceSlider = (direction = 1) => {
+    updateCoverflow(currentSlideIndex + direction, true);
+  };
+
+  // Build Pagination Dots
   const buildDots = () => {
     if (!dotsContainer || !sliderTrack) return;
     dotsContainer.innerHTML = '';
@@ -980,7 +1044,7 @@ document.addEventListener('DOMContentLoaded', () => {
       dot.setAttribute('aria-label', `Go to project ${idx + 1}`);
       dot.setAttribute('aria-selected', idx === currentSlideIndex ? 'true' : 'false');
       dot.addEventListener('click', () => {
-        scrollToCard(idx);
+        updateCoverflow(idx, true);
         restartAutoplayTimer();
       });
       dotsContainer.appendChild(dot);
@@ -988,49 +1052,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderActiveState(currentSlideIndex);
   };
 
-  const scrollToCard = (index) => {
-    if (!sliderTrack) return;
-    const visibleCards = getVisibleCards();
-    if (!visibleCards.length) return;
-
-    const safeIndex = Math.max(0, Math.min(index, visibleCards.length - 1));
-    currentSlideIndex = safeIndex;
-
-    // Lock programmatic scroll flag during smooth transition
-    isProgrammaticScroll = true;
-    if (programmaticTimer) clearTimeout(programmaticTimer);
-    programmaticTimer = setTimeout(() => {
-      isProgrammaticScroll = false;
-    }, 550);
-
-    const card = visibleCards[safeIndex];
-    const offset = card.offsetLeft - sliderTrack.offsetLeft;
-    const maxScroll = Math.max(0, sliderTrack.scrollWidth - sliderTrack.clientWidth);
-    const targetScroll = Math.min(offset, maxScroll);
-
-    sliderTrack.scrollTo({
-      left: targetScroll,
-      behavior: 'smooth'
-    });
-
-    renderActiveState(safeIndex);
-  };
-
-  const advanceSlider = (direction = 1) => {
-    if (!sliderTrack) return;
-    const visibleCards = getVisibleCards();
-    if (!visibleCards.length) return;
-
-    let nextIndex = currentSlideIndex + direction;
-    if (nextIndex >= visibleCards.length) {
-      nextIndex = 0; // Seamless loop back to first project (01 / 06)
-    } else if (nextIndex < 0) {
-      nextIndex = visibleCards.length - 1; // Seamless loop to last project (06 / 06)
-    }
-
-    scrollToCard(nextIndex);
-  };
-
+  // Autoplay Engine
   const startAutoplay = () => {
     if (autoplayInterval) clearInterval(autoplayInterval);
     autoplayInterval = setInterval(() => {
@@ -1081,12 +1103,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   if (sliderTrack) {
-    let isDown = false;
-    let startX = 0;
-    let scrollLeft = 0;
-    let isDragging = false;
-
-    // Autoplay Toggle Button
+    // Top Autoplay Toggle Button
     if (autoplayBtn) {
       autoplayBtn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -1094,7 +1111,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Arrow Prev
+    // Top Header Arrow Buttons
     if (prevBtn) {
       prevBtn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -1102,8 +1119,6 @@ document.addEventListener('DOMContentLoaded', () => {
         restartAutoplayTimer();
       });
     }
-
-    // Arrow Next
     if (nextBtn) {
       nextBtn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -1112,86 +1127,154 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Mouse Wheel Horizontal Scroll
-    sliderTrack.addEventListener('wheel', (e) => {
-      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; // Already horizontal
-      e.preventDefault();
-      sliderTrack.scrollLeft += e.deltaY * 0.85;
-      isUserInteracting = true;
-      restartAutoplayTimer();
-      setTimeout(() => { isUserInteracting = false; }, 800);
-    }, { passive: false });
+    // Floating Stage Navigation Arrows (Matching Screenshot)
+    if (stagePrevBtn) {
+      stagePrevBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        advanceSlider(-1);
+        restartAutoplayTimer();
+      });
+    }
+    if (stageNextBtn) {
+      stageNextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        advanceSlider(1);
+        restartAutoplayTimer();
+      });
+    }
 
-    // Hover Pausing
-    sliderTrack.addEventListener('mouseenter', () => {
-      isHovered = true;
+    // Side-Card Click-To-Center: Clicking any visible adjacent card immediately centers it
+    projectCards.forEach((card) => {
+      card.addEventListener('click', (e) => {
+        const visibleCards = getVisibleCards();
+        const cardIdx = visibleCards.indexOf(card);
+        if (cardIdx === -1) return;
+
+        let offset = cardIdx - currentSlideIndex;
+        const count = visibleCards.length;
+        if (count > 1) {
+          while (offset > count / 2) offset -= count;
+          while (offset < -count / 2) offset += count;
+        }
+
+        if (offset !== 0) {
+          e.preventDefault();
+          e.stopPropagation();
+          advanceSlider(offset);
+          restartAutoplayTimer();
+        }
+      });
     });
 
-    sliderTrack.addEventListener('mouseleave', () => {
+    // Hover Pausing
+    const stageContainer = sliderWrapper || sliderTrack;
+    stageContainer.addEventListener('mouseenter', () => {
+      isHovered = true;
+    });
+    stageContainer.addEventListener('mouseleave', () => {
       isHovered = false;
       restartAutoplayTimer();
     });
 
-    // Mouse Drag Scroll for desktop
+    // Touch & Pointer Drag Gestures
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let isDragging = false;
+    let isPointerDown = false;
+
+    const onDragStart = (clientX, clientY) => {
+      isPointerDown = true;
+      isDragging = false;
+      dragStartX = clientX;
+      dragStartY = clientY;
+      isUserInteracting = true;
+    };
+
+    const onDragMove = (clientX, clientY) => {
+      if (!isPointerDown) return;
+      const diffX = clientX - dragStartX;
+      const diffY = clientY - dragStartY;
+      if (Math.abs(diffX) > 10 && Math.abs(diffX) > Math.abs(diffY)) {
+        isDragging = true;
+        sliderTrack.classList.add('is-dragging');
+      }
+    };
+
+    const onDragEnd = (clientX) => {
+      if (!isPointerDown) return;
+      isPointerDown = false;
+      sliderTrack.classList.remove('is-dragging');
+      isUserInteracting = false;
+
+      if (isDragging) {
+        const diffX = clientX - dragStartX;
+        if (diffX > 40) {
+          advanceSlider(-1);
+        } else if (diffX < -40) {
+          advanceSlider(1);
+        }
+        restartAutoplayTimer();
+      }
+      setTimeout(() => { isDragging = false; }, 60);
+    };
+
+    // Mouse drag on desktop
     sliderTrack.addEventListener('mousedown', (e) => {
       if (e.target.closest('a, button')) return;
-      isDown = true;
-      isDragging = false;
-      isUserInteracting = true;
-      sliderTrack.classList.add('is-dragging');
-      startX = e.pageX - sliderTrack.offsetLeft;
-      scrollLeft = sliderTrack.scrollLeft;
+      onDragStart(e.clientX, e.clientY);
     });
 
-    sliderTrack.addEventListener('mouseleave', () => {
-      isDown = false;
-      sliderTrack.classList.remove('is-dragging');
+    window.addEventListener('mousemove', (e) => {
+      if (!isPointerDown) return;
+      onDragMove(e.clientX, e.clientY);
     });
 
-    sliderTrack.addEventListener('mouseup', () => {
-      isDown = false;
-      isUserInteracting = false;
-      sliderTrack.classList.remove('is-dragging');
-      restartAutoplayTimer();
+    window.addEventListener('mouseup', (e) => {
+      if (!isPointerDown) return;
+      onDragEnd(e.clientX);
     });
 
-    sliderTrack.addEventListener('mousemove', (e) => {
-      if (!isDown) return;
+    // Touch swipe on mobile & tablets
+    sliderTrack.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        onDragStart(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+    sliderTrack.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 1) {
+        onDragMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+    sliderTrack.addEventListener('touchend', (e) => {
+      if (e.changedTouches.length === 1) {
+        onDragEnd(e.changedTouches[0].clientX);
+      }
+    }, { passive: true });
+
+    // Smooth Mouse Wheel Navigation
+    sliderTrack.addEventListener('wheel', (e) => {
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      if (Math.abs(delta) < 25) return;
       e.preventDefault();
-      const x = e.pageX - sliderTrack.offsetLeft;
-      const walk = (x - startX) * 1.4;
-      if (Math.abs(walk) > 6) {
-        isDragging = true;
-      }
-      sliderTrack.scrollLeft = scrollLeft - walk;
-    });
 
-    sliderTrack.addEventListener('click', (e) => {
-      if (isDragging) {
-        e.preventDefault();
-        e.stopPropagation();
-        isDragging = false;
-      }
-    }, true);
+      if (wheelThrottleTimer) return;
+      wheelThrottleTimer = setTimeout(() => {
+        wheelThrottleTimer = null;
+      }, 380);
 
-    // Touch events for mobile
-    sliderTrack.addEventListener('touchstart', () => {
       isUserInteracting = true;
-    }, { passive: true });
-
-    sliderTrack.addEventListener('touchend', () => {
-      isUserInteracting = false;
+      if (delta > 0) {
+        advanceSlider(1);
+      } else {
+        advanceSlider(-1);
+      }
       restartAutoplayTimer();
-    }, { passive: true });
+      setTimeout(() => { isUserInteracting = false; }, 400);
+    }, { passive: false });
 
-    // Scroll listener with requestAnimationFrame throttle
-    let scrollRaf = 0;
-    sliderTrack.addEventListener('scroll', () => {
-      if (scrollRaf) cancelAnimationFrame(scrollRaf);
-      scrollRaf = requestAnimationFrame(updateSliderUI);
-    }, { passive: true });
-
-    // IntersectionObserver to only autoplay when in view
+    // IntersectionObserver to only autoplay when #projects is visible
     const projectsSection = document.getElementById('projects');
     if (projectsSection && 'IntersectionObserver' in window) {
       const projObserver = new IntersectionObserver((entries) => {
@@ -1211,7 +1294,7 @@ document.addEventListener('DOMContentLoaded', () => {
       startAutoplay();
     }
 
-    // Visibility change (pause when tab hidden)
+    // Visibility change (pause when tab hidden, resume when active)
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         if (autoplayInterval) {
@@ -1223,16 +1306,24 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Build initial dots and UI
+    // Window resize handler: adjusts 3D transforms responsive to viewport width
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+      if (resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        updateCoverflow(currentSlideIndex, false);
+      }, 80);
+    }, { passive: true });
+
+    // Initial setup: render coverflow stage & pagination dots
     buildDots();
+    updateCoverflow(0, false);
 
-    window.addEventListener('resize', updateSliderUI, { passive: true });
-
-    // Expose refresh function
+    // Global refresh function for filter & theme changes
     window.refreshProjectsSlider = () => {
       currentSlideIndex = 0;
-      sliderTrack.scrollTo({ left: 0, behavior: 'smooth' });
-      setTimeout(buildDots, 260);
+      buildDots();
+      updateCoverflow(0, true);
       restartAutoplayTimer();
     };
   }
@@ -1262,6 +1353,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
 
   /* ==========================================================================
      7. COMMUNITY GUESTBOOK

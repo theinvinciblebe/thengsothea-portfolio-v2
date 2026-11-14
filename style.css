@@ -2535,57 +2535,112 @@ body.light-theme .orbit-center-name {
   box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
 }
 
-.project-card.is-active-slide {
-  border-color: var(--accent-cyan);
-  box-shadow: 0 16px 36px rgba(6, 182, 212, 0.22);
-}
-
-[data-template="forest"] .project-card.is-active-slide {
-  border-color: var(--accent-forest, #10b981);
-  box-shadow: 0 16px 36px rgba(16, 185, 129, 0.22);
-}
-
-/* Projects Slider Wrapper & Horizontal Snap Track */
+/* ==========================================================================
+   PROJECTS 3D COVERFLOW PERSPECTIVE STAGE
+   ========================================================================== */
 .projects-slider-wrapper {
   position: relative;
   width: 100%;
-  overflow: visible;
-  padding: 8px 0 16px;
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+  overflow: hidden;
+  padding: 24px 0 20px;
+  user-select: none;
+  touch-action: pan-y;
 }
 
+/* Floating Stage Navigation Arrows (Matching Coverflow Reference) */
+.coverflow-stage-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  cursor: pointer;
+  z-index: 35;
+  transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+  outline: none;
+  padding: 0;
+}
+
+.coverflow-stage-arrow:hover {
+  background: var(--accent-cyan, #06b6d4);
+  color: #07080c;
+  border-color: var(--accent-cyan, #06b6d4);
+  transform: translateY(-50%) scale(1.12);
+  box-shadow: 0 12px 32px rgba(6, 182, 212, 0.5);
+}
+
+.coverflow-stage-arrow:active {
+  transform: translateY(-50%) scale(0.96);
+}
+
+.coverflow-stage-prev {
+  left: 1.25rem;
+}
+
+.coverflow-stage-next {
+  right: 1.25rem;
+}
+
+[data-template="forest"] .coverflow-stage-arrow:hover {
+  background: var(--accent-forest, #10b981);
+  color: #07080c;
+  border-color: var(--accent-forest, #10b981);
+  box-shadow: 0 12px 32px rgba(16, 185, 129, 0.5);
+}
+
+[data-theme="light"] .coverflow-stage-arrow {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #1e293b;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .coverflow-stage-arrow:hover {
+  background: var(--accent-cyan, #06b6d4);
+  color: #ffffff;
+}
+
+[data-theme="light"][data-template="forest"] .coverflow-stage-arrow:hover {
+  background: var(--accent-forest, #10b981);
+  color: #ffffff;
+}
+
+/* 3D Perspective Track */
 .projects-slider-track,
-.projects-slider-track.projects-grid {
+.projects-coverflow-track {
+  position: relative;
+  width: 100%;
+  height: 570px;
+  min-height: 570px;
   display: flex !important;
-  gap: 1.85rem;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-behavior: smooth;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  padding: 14px 6px 26px;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  overflow: visible;
+  padding: 0;
+  margin: 0;
   cursor: grab;
   user-select: none;
-  margin: 0;
 }
 
-.projects-slider-track.is-dragging {
-  scroll-behavior: auto;
+.projects-coverflow-track.is-dragging {
   cursor: grabbing;
 }
 
-.projects-slider-track::-webkit-scrollbar {
-  display: none;
-}
-
-/* Fallback Grid when not in slider */
-.projects-grid {
-  display: flex;
-  gap: 1.85rem;
-}
-
-/* Project Card Styled for Slider */
+/* Project Card Base */
 .project-card {
   position: relative;
   background: var(--bg-card);
@@ -2593,18 +2648,67 @@ body.light-theme .orbit-center-name {
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-md);
-  transition: transform var(--transition-normal), border-color var(--transition-normal), box-shadow var(--transition-normal), opacity var(--transition-normal);
   display: flex;
   flex-direction: column;
 }
 
-.projects-slider-track .project-card {
-  flex: 0 0 calc((100% - 2 * 1.85rem) / 3);
-  min-width: 330px;
+/* 3D Coverflow Cards Positioning */
+.projects-coverflow-track .project-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(300px, 32vw, 420px);
   max-width: 440px;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  height: auto;
+  margin: 0;
+  transform-origin: center center;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+              filter 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.4s ease;
+  will-change: transform, opacity, filter;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+/* Side Cards: Pointer cursor so clicking directly centers that card */
+.projects-coverflow-track .project-card:not(.is-active-slide) {
+  cursor: pointer;
+}
+
+.projects-coverflow-track .project-card:not(.is-active-slide):hover {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.projects-coverflow-track .project-card:not(.is-active-slide) a,
+.projects-coverflow-track .project-card:not(.is-active-slide) button {
+  pointer-events: none;
+}
+
+/* Active Center Card: Elevated 3D Depth, Glow & Clickable Links */
+.projects-coverflow-track .project-card.is-active-slide {
+  border-color: var(--accent-cyan, #06b6d4);
+  box-shadow: 0 24px 54px rgba(0, 0, 0, 0.55), 0 0 32px rgba(6, 182, 212, 0.32);
+  cursor: default;
+}
+
+.projects-coverflow-track .project-card.is-active-slide:hover {
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.6), 0 0 36px rgba(6, 182, 212, 0.4);
+}
+
+.projects-coverflow-track .project-card.is-active-slide a,
+.projects-coverflow-track .project-card.is-active-slide button {
+  pointer-events: auto;
+}
+
+[data-template="forest"] .projects-coverflow-track .project-card.is-active-slide {
+  border-color: var(--accent-forest, #10b981);
+  box-shadow: 0 24px 54px rgba(0, 0, 0, 0.55), 0 0 32px rgba(16, 185, 129, 0.32);
+}
+
+[data-template="forest"] .projects-coverflow-track .project-card.is-active-slide:hover {
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.6), 0 0 36px rgba(16, 185, 129, 0.4);
 }
 
 .project-card:hover {
@@ -2767,9 +2871,12 @@ body.light-theme .orbit-center-name {
 }
 
 @media (max-width: 1180px) {
-  .projects-slider-track .project-card {
-    flex: 0 0 calc((100% - 1.5rem) / 2);
-    min-width: 300px;
+  .projects-coverflow-track {
+    height: 550px;
+    min-height: 550px;
+  }
+  .projects-coverflow-track .project-card {
+    width: clamp(285px, 40vw, 380px);
   }
 }
 
@@ -2779,15 +2886,26 @@ body.light-theme .orbit-center-name {
     align-items: center;
     gap: 1.25rem;
   }
-  .projects-slider-track {
-    gap: 1.25rem;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+  .projects-slider-wrapper {
+    padding: 16px 0 12px;
   }
-  .projects-slider-track .project-card {
-    flex: 0 0 86%;
-    min-width: 260px;
-    max-width: 360px;
+  .projects-coverflow-track {
+    height: 520px;
+    min-height: 520px;
+  }
+  .projects-coverflow-track .project-card {
+    width: clamp(270px, 80vw, 340px);
+  }
+  .coverflow-stage-arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+  .coverflow-stage-prev {
+    left: 0.5rem;
+  }
+  .coverflow-stage-next {
+    right: 0.5rem;
   }
 }
 
@@ -3678,15 +3796,23 @@ body.light-theme .orbit-center-name {
   .projects-controls-bar {
     gap: 0.85rem;
   }
-  .projects-slider-track {
-    gap: 1rem;
-    padding-left: 0.25rem;
-    padding-right: 0.25rem;
+  .projects-coverflow-track {
+    height: 485px;
+    min-height: 485px;
   }
-  .projects-slider-track .project-card {
-    flex: 0 0 92%;
-    min-width: 0;
-    max-width: 100%;
+  .projects-coverflow-track .project-card {
+    width: clamp(260px, 86vw, 310px);
+  }
+  .coverflow-stage-arrow {
+    width: 34px;
+    height: 34px;
+    font-size: 0.85rem;
+  }
+  .coverflow-stage-prev {
+    left: 0.25rem;
+  }
+  .coverflow-stage-next {
+    right: 0.25rem;
   }
   .project-image-box {
     height: 180px;
