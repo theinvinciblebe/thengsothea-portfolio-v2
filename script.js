@@ -542,6 +542,40 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
+     2d. SWARMCURSOR FLUID SIMULATION (REACT BITS)
+     Hardware-accelerated WebGL2 particle swarm cursor flowing behind Hero section
+     ========================================================================== */
+  const heroSwarmContainer = document.getElementById('hero-swarm-container');
+  if (heroSwarmContainer && typeof initSwarmCursor === 'function') {
+    const isPageCyan = window.location.pathname.includes('template-cyan') || (document.documentElement.getAttribute('data-template') === 'cyan' && !window.location.pathname.includes('template-forest'));
+    const curTemplate = isPageCyan ? 'cyan' : (localStorage.getItem('sothea_portfolio_template') || document.documentElement.getAttribute('data-template') || 'forest');
+    const isCyan = curTemplate === 'cyan';
+    const isLight = document.body.classList.contains('light-theme') || (localStorage.getItem('sothea_portfolio_theme') === 'light');
+
+    window.swarmCursorInstance = initSwarmCursor(heroSwarmContainer, {
+      count: 800,
+      size: 2.6,
+      spread: 90,
+      swirl: 0.6,
+      speed: 1,
+      tail: 0.5,
+      trail: 0.6,
+      wander: 0.5,
+      depth: 0.7,
+      targets: 'a, button, [data-swarm-target]',
+      targetScope: '#home',
+      idle: 'roam',
+      clickEffect: 'burst',
+      hideCursor: false,
+      intro: true,
+      enabled: true,
+      lightMode: isLight,
+      color: isCyan ? (isLight ? '#0891b2' : '#22d3ee') : (isLight ? '#059669' : '#34d399'),
+      accentColor: isCyan ? (isLight ? '#0e7490' : '#06b6d4') : (isLight ? '#047857' : '#10b981')
+    });
+  }
+
+  /* ==========================================================================
      3. NAVBAR SCROLL EFFECT & SCROLL SPY
      ========================================================================== */
   const navbar = document.getElementById('navbar');
@@ -614,6 +648,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.cardNavInstance && typeof window.cardNavInstance.update === 'function') {
       window.cardNavInstance.update({
         theme: isLight ? 'light' : 'dark'
+      });
+    }
+
+    // Update SwarmCursor if initialized
+    if (window.swarmCursorInstance && typeof window.swarmCursorInstance.update === 'function') {
+      window.swarmCursorInstance.update({
+        lightMode: isLight,
+        color: isCyan ? (isLight ? '#0891b2' : '#22d3ee') : (isLight ? '#059669' : '#34d399'),
+        accentColor: isCyan ? (isLight ? '#0e7490' : '#06b6d4') : (isLight ? '#047857' : '#10b981')
       });
     }
 
@@ -770,6 +813,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.cardNavInstance && typeof window.cardNavInstance.update === 'function') {
       window.cardNavInstance.update({
         template: validTemplate
+      });
+    }
+
+    // Update SwarmCursor if initialized
+    if (window.swarmCursorInstance && typeof window.swarmCursorInstance.update === 'function') {
+      const isCyanTpl = validTemplate === 'cyan';
+      window.swarmCursorInstance.update({
+        lightMode: isLight,
+        color: isCyanTpl ? (isLight ? '#0891b2' : '#22d3ee') : (isLight ? '#059669' : '#34d399'),
+        accentColor: isCyanTpl ? (isLight ? '#0e7490' : '#06b6d4') : (isLight ? '#047857' : '#10b981')
       });
     }
 

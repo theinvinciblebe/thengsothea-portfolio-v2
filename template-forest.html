@@ -51,6 +51,7 @@
   <link rel="stylesheet" href="GyroscopeCursor.css" />
   <link rel="stylesheet" href="CardNav.css" />
   <link rel="stylesheet" href="ReflectiveCard.css" />
+  <link rel="stylesheet" href="SwarmCursor.css" />
 
   <!-- Import map for Three.js module environments -->
   <script type="importmap">
@@ -124,6 +125,9 @@
     <!-- 3. HERO SECTION (#home)                                 -->
     <!-- ====================================================== -->
     <section id="home" class="section hero-section">
+      <!-- SwarmCursor Particle Fluid Simulation Canvas Container -->
+      <div id="hero-swarm-container" class="hero-swarm-container" aria-hidden="true"></div>
+
       <div class="section-container hero-grid">
         <!-- Hero Left Column: Intro Text -->
         <div class="hero-content reveal-on-scroll is-revealed">
@@ -1504,6 +1508,8 @@
   <script src="card-nav.js"></script>
   <!-- ReflectiveCard WebGL2 Surface (React Bits) -->
   <script src="reflective-card.js"></script>
+  <!-- SwarmCursor Particle Fluid Simulation (React Bits) -->
+  <script src="swarm-cursor.js"></script>
   <!-- Main JavaScript Logic -->
   <script src="script.js"></script>
 </body>
