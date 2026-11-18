@@ -449,6 +449,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function dismissWelcomeScreen() {
     if (!welcomeOverlay) return;
     welcomeOverlay.classList.add('fade-out');
+    document.documentElement.classList.remove('welcome-active');
+    document.body.classList.remove('welcome-active');
+    window.scrollTo({ top: 0, behavior: 'instant' });
     if (window.topographyInstance && typeof window.topographyInstance.pause === 'function') {
       window.topographyInstance.pause();
     }
@@ -470,6 +473,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Allow bypassing welcome screen directly via ?skipWelcome query param
   if (new URLSearchParams(window.location.search).has('skipWelcome')) {
+    document.documentElement.classList.remove('welcome-active');
+    document.body.classList.remove('welcome-active');
     if (welcomeOverlay) {
       welcomeOverlay.style.display = 'none';
       triggerScrollReveals();
@@ -489,6 +494,20 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
+
+  // Prevent wheel and touch scrolling on welcome overlay
+  if (welcomeOverlay) {
+    welcomeOverlay.addEventListener('wheel', (e) => {
+      if (welcomeOverlay.style.display !== 'none' && !welcomeOverlay.classList.contains('fade-out')) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+    welcomeOverlay.addEventListener('touchmove', (e) => {
+      if (welcomeOverlay.style.display !== 'none' && !welcomeOverlay.classList.contains('fade-out')) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+  }
 
   /* ==========================================================================
      2b. GYROSCOPE CURSOR (REACT BITS PRO)

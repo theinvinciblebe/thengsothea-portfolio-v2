@@ -349,6 +349,15 @@ body.light-theme .ambient-glow {
 /* ==========================================================================
    1. WELCOME / INTRO OVERLAY & TOPOGRAPHY BACKGROUND (REACT BITS)
    ========================================================================== */
+/* Lock document scrolling while welcome screen is active */
+html.welcome-active,
+body.welcome-active {
+  overflow: hidden !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  touch-action: none !important;
+}
+
 .welcome-overlay {
   position: fixed;
   inset: 0;
